@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voclearner/widgets/word_editor_card.dart';
 
 class NewVocPage extends StatefulWidget {
   const NewVocPage({super.key});
@@ -11,6 +12,7 @@ class _NewVocPageState extends State<NewVocPage> {
   final newVocFormKey = GlobalKey<FormState>();
   String title = "";
   String description = "";
+  List<Widget> wordsCards = [const WordEditorCard()];
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,10 @@ class _NewVocPageState extends State<NewVocPage> {
                       hintText: 'Description',
                     ),
                   ),
+                  SizedBox(height: 40),
+                  Column(
+                    children: wordsCards,
+                  )
                 ],
               ),
             )),
