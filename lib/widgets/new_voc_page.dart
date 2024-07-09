@@ -60,11 +60,11 @@ class _NewVocPageState extends State<NewVocPage> {
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
-                save().then((v) => Navigator.of(context).push(
+                save().then((v) => Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                           builder: (context) => const PagesLayout(
-                                child: HomePage(),
                                 currentSection: 0,
+                                child: HomePage(),
                               )),
                     ));
               })
