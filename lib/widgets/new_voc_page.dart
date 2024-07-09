@@ -60,13 +60,17 @@ class _NewVocPageState extends State<NewVocPage> {
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
-                save().then((v) => Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => const PagesLayout(
-                                currentSection: 0,
-                                child: HomePage(),
-                              )),
-                    ));
+                if (newVocFormKey.currentState!.validate()) {
+                  newVocFormKey.currentState!.save();
+
+                  save().then((v) => Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => const PagesLayout(
+                                  currentSection: 0,
+                                  child: HomePage(),
+                                )),
+                      ));
+                }
               })
         ],
       ),
