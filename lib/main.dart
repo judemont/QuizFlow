@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/pages_layout.dart';
-import 'package:voclearner/widgets/vocs_list_page.dart';
+import 'package:voclearner/widgets/home_page.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
         home: PagesLayout(
-      child: VocsListPage(),
+      child: HomePage(),
     ));
   }
 }

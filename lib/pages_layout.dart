@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/widgets/new_voc_page.dart';
 import 'package:voclearner/widgets/settings_page.dart';
-import 'package:voclearner/widgets/vocs_list_page.dart';
+import 'package:voclearner/widgets/home_page.dart';
 
 class PagesLayout extends StatefulWidget {
   final Widget child;
@@ -23,7 +23,7 @@ class _PagesLayoutState extends State<PagesLayout> {
   late int currentPageIndex;
   late Widget currentChild;
   List<Widget> pages = [
-    const VocsListPage(),
+    const HomePage(),
     const NewVocPage(),
     const SettingsPage(),
   ];
