@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/models/voc.dart';
 import 'package:voclearner/models/word.dart';
+import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/services/database.dart';
+import 'package:voclearner/widgets/home_page.dart';
 import 'package:voclearner/widgets/word_editor_card.dart';
 
 class NewVocPage extends StatefulWidget {
@@ -18,15 +20,18 @@ class _NewVocPageState extends State<NewVocPage> {
   List<Widget> wordsCards = [];
   List<List<TextEditingController>> wordsControllers = [];
 
-  void save() async {
+  Future<void> save() async {
+    print(title);
     int vocId = await DatabaseService.createVoc(
         Voc(title: title, description: description));
+
     for (int i = 0; i < wordsControllers.length; i++) {
-      DatabaseService.createWord(Word(
+      await DatabaseService.createWord(Word(
           vocId: vocId,
           word: wordsControllers[i][0].text,
           definition: wordsControllers[i][1].text));
     }
+    return;
   }
 
   @override
@@ -55,7 +60,13 @@ class _NewVocPageState extends State<NewVocPage> {
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
-                save();
+                save().then((v) => Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const PagesLayout(
+                                child: HomePage(),
+                                currentSection: 0,
+                              )),
+                    ));
               })
         ],
       ),
