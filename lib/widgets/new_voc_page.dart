@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:voclearner/models/voc.dart';
+import 'package:voclearner/models/word.dart';
+import 'package:voclearner/services/database.dart';
 import 'package:voclearner/widgets/word_editor_card.dart';
 
 class NewVocPage extends StatefulWidget {
@@ -14,6 +17,17 @@ class _NewVocPageState extends State<NewVocPage> {
   String description = "";
   List<Widget> wordsCards = [];
   List<List<TextEditingController>> wordsControllers = [];
+
+  void save() async {
+    int vocId = await DatabaseService.createVoc(
+        Voc(title: title, description: description));
+    for (int i = 0; i < wordsControllers.length; i++) {
+      DatabaseService.createWord(Word(
+          vocId: vocId,
+          word: wordsControllers[i][0].text,
+          definition: wordsControllers[i][1].text));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +51,13 @@ class _NewVocPageState extends State<NewVocPage> {
       ),
       appBar: AppBar(
         title: const Text("New Voc"),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.save),
+              onPressed: () {
+                save();
+              })
+        ],
       ),
       body: SingleChildScrollView(
         child: Form(
