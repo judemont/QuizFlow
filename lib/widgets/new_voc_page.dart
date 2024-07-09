@@ -12,11 +12,29 @@ class _NewVocPageState extends State<NewVocPage> {
   final newVocFormKey = GlobalKey<FormState>();
   String title = "";
   String description = "";
-  List<Widget> wordsCards = [const WordEditorCard()];
+  List<Widget> wordsCards = [];
+  List<List<TextEditingController>> wordsControllers = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add_circle),
+        onPressed: () {
+          setState(() {
+            TextEditingController termController = TextEditingController();
+            TextEditingController definitionController =
+                TextEditingController();
+
+            wordsCards.add(WordEditorCard(
+              termController: termController,
+              definitionController: definitionController,
+            ));
+
+            wordsControllers.add([termController, definitionController]);
+          });
+        },
+      ),
       appBar: AppBar(
         title: const Text("New Voc"),
       ),
@@ -48,7 +66,7 @@ class _NewVocPageState extends State<NewVocPage> {
                       hintText: 'Description',
                     ),
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                   Column(
                     children: wordsCards,
                   )
