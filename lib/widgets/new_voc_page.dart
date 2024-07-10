@@ -37,23 +37,6 @@ class _NewVocPageState extends State<NewVocPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add_circle),
-        onPressed: () {
-          setState(() {
-            TextEditingController termController = TextEditingController();
-            TextEditingController definitionController =
-                TextEditingController();
-
-            wordsCards.add(WordEditorCard(
-              termController: termController,
-              definitionController: definitionController,
-            ));
-
-            wordsControllers.add([termController, definitionController]);
-          });
-        },
-      ),
       appBar: AppBar(
         title: const Text("New Voc"),
         actions: [
@@ -104,7 +87,58 @@ class _NewVocPageState extends State<NewVocPage> {
                   ),
                   const SizedBox(height: 40),
                   Column(
-                    children: wordsCards,
+                    children: [
+                      Column(
+                        children: wordsCards,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              TextEditingController termController =
+                                  TextEditingController();
+                              TextEditingController definitionController =
+                                  TextEditingController();
+
+                              int wordIndex = wordsControllers.length + 1;
+
+                              wordsCards.add(Dismissible(
+                                direction: DismissDirection.endToStart,
+                                onDismissed: (DismissDirection direction) {
+                                  print('Dismissed with direction $direction');
+                                  print(definitionController.text);
+                                  wordsControllers.removeAt(wordIndex);
+                                },
+                                // confirmDismiss:
+                                //     (DismissDirection direction) async {
+                                //   return false;
+                                // },
+                                background: const ColoredBox(
+                                  color: Colors.red,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16.0),
+                                      child: Icon(Icons.delete,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                key: UniqueKey(),
+                                child: WordEditorCard(
+                                  termController: termController,
+                                  definitionController: definitionController,
+                                ),
+                              ));
+
+                              wordsControllers
+                                  .add([termController, definitionController]);
+                            });
+                          },
+                          child: const Text("New"))
+                    ],
                   )
                 ],
               ),
