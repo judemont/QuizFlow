@@ -11,7 +11,13 @@ class WordCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: [Text(word.word ?? ""), Text(word.definition ?? "")],
+          children: [
+            Text(word.word ?? ""),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(word.definition ?? "")
+          ],
         ),
       ),
     );
