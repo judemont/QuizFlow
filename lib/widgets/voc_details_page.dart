@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/models/voc.dart';
 import 'package:voclearner/models/word.dart';
+import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/services/database.dart';
 import 'package:voclearner/widgets/word_card.dart';
+import 'package:voclearner/widgets/write_page.dart';
 
 class VocDetailsPage extends StatefulWidget {
   final Voc voc;
@@ -59,7 +61,16 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => PagesLayout(
+                              displayNavBar: false,
+                              child: WritePage(
+                                words: words,
+                              ))),
+                    );
+                  },
                   label: const Text("Write"),
                   icon: const Icon(Icons.edit_note),
                 ),
