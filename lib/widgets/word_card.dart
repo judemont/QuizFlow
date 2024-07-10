@@ -21,6 +21,5 @@ class WordCard extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
