@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/models/voc.dart';
+import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/services/database.dart';
+import 'package:voclearner/widgets/voc_details_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,7 +39,16 @@ class _HomePageState extends State<HomePage> {
           return ListTile(
             title: Text(vocs[index].title ?? ""),
             subtitle: Text(vocs[index].description ?? ""),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) => PagesLayout(
+                        displayNavBar: false,
+                        child: VocDetailsPage(
+                          voc: vocs[index],
+                        ))),
+              );
+            },
           );
 
           // GestureDetector(
