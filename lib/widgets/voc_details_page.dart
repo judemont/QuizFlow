@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/models/voc.dart';
+import 'package:voclearner/models/word.dart';
+import 'package:voclearner/services/database.dart';
+import 'package:voclearner/widgets/word_card.dart';
 
 class VocDetailsPage extends StatefulWidget {
   final Voc voc;
@@ -10,6 +13,22 @@ class VocDetailsPage extends StatefulWidget {
 }
 
 class _VocDetailsPageState extends State<VocDetailsPage> {
+  List<Word> words = [];
+
+  Future<void> loadWords() async {
+    DatabaseService.getWordsFromVoc(widget.voc.id!).then((value) {
+      setState(() {
+        words = value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    loadWords();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,16 +39,16 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
         margin: const EdgeInsets.only(left: 10, right: 10),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
                 height: 20,
               ),
               Center(
-                child: Text(
-                  widget.voc.title ?? "",
-                  style: const TextStyle(fontSize: 25),
-                ),
-              ),
+                  child: Text(
+                widget.voc.title ?? "",
+                style: const TextStyle(fontSize: 25),
+              )),
               const SizedBox(
                 height: 20,
               ),
@@ -55,7 +74,19 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                   label: const Text("Flashcards"),
                   icon: const Icon(Icons.dynamic_feed),
                 ),
-              )
+              ),
+              const SizedBox(height: 30),
+              const Text(
+                "Words:",
+                style: TextStyle(fontSize: 20),
+              ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: words.length,
+                  itemBuilder: (context, index) {
+                    return WordCard(word: words[index]);
+                  })
             ],
           ),
         ),
