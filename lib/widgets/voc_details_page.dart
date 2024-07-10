@@ -53,7 +53,7 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                 child: ElevatedButton.icon(
                   onPressed: () {},
                   label: const Text("Flashcards"),
-                  icon: const Icon(Icons.edit_note),
+                  icon: const Icon(Icons.dynamic_feed),
                 ),
               )
             ],
