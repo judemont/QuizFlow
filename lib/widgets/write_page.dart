@@ -26,14 +26,14 @@ class _WritePageState extends State<WritePage> {
 
   @override
   void initState() {
-    List<Word> wordsToLearn = widget.words..shuffle();
+    wordsToLearn = widget.words..shuffle();
 
     nextWord();
     super.initState();
   }
 
   void nextWord() {
-    if (actualWordIndex < wordsToLearn.length) {
+    if (actualWordIndex < wordsToLearn.length - 1) {
       actualWordIndex++;
       setState(() {
         inputLabelText = defaultInputLabelText;
