@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:voclearner/models/word.dart';
 
 class WritePage extends StatefulWidget {
   final List<Word> words;
-
   const WritePage({super.key, required this.words});
 
   @override
@@ -12,11 +12,63 @@ class WritePage extends StatefulWidget {
 
 class _WritePageState extends State<WritePage> {
   late Word actualWord;
+  TextEditingController answerController = TextEditingController();
+  bool displayGoodAnswerText = false;
+  bool wrongAnswer = false;
+  String goodAnswerText = "Good answer ! D;";
+  String userAnswer = "";
+  final String defaultInputLabelText = "Type the term";
+  String inputLabelText = "";
+  final int waitTimeAfterCorrectAnswer = 2;
+  int actualWordIndex = 0;
 
   @override
   void initState() {
-    actualWord = widget.words[0];
+    nextWord();
     super.initState();
+  }
+
+  void nextWord() {
+    actualWordIndex++;
+    setState(() {
+      inputLabelText = defaultInputLabelText;
+      displayGoodAnswerText = false;
+      wrongAnswer = false;
+      actualWord = widget.words[actualWordIndex];
+      answerController.clear();
+    });
+  }
+
+  Future<void> onTrue() async {
+    print("good answer");
+    setState(() {
+      wrongAnswer = false;
+      displayGoodAnswerText = true;
+    });
+    answerController.clear();
+
+    await Future.delayed(Duration(seconds: waitTimeAfterCorrectAnswer));
+    nextWord();
+  }
+
+  void onWrong() {
+    print("bad answer");
+    setState(() {
+      wrongAnswer = true;
+      answerController.clear();
+      inputLabelText = "Write the correct answer";
+    });
+  }
+
+  void onSubmit() {
+    setState(() {
+      userAnswer = answerController.text;
+    });
+    if (actualWord.definition == userAnswer) {
+      onTrue();
+    } else {
+      onWrong();
+    }
   }
 
   @override
@@ -31,13 +83,46 @@ class _WritePageState extends State<WritePage> {
               actualWord.word ?? "",
               style: const TextStyle(fontSize: 30),
             ),
-            const Spacer(), // Adds space between the text and the TextField
-            const TextField(
-              autocorrect: false,
-              decoration: InputDecoration(
-                labelText: "Type the term",
-              ),
+            const Spacer(),
+            Visibility(
+              visible: wrongAnswer,
+              child: Column(children: [
+                Text(
+                  "Correct answer: '${actualWord.definition}'",
+                  style: const TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Text("Your answer: '$userAnswer'",
+                    style: const TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold)),
+              ]),
             ),
+            Visibility(
+                visible: displayGoodAnswerText,
+                child: Text(
+                  goodAnswerText,
+                  style: const TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                )),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: answerController,
+                    autofocus: true,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      labelText: inputLabelText,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                IconButton(
+                    onPressed: () => onSubmit(), icon: const Icon(Icons.send))
+              ],
+            )
           ],
         ),
       ),
