@@ -36,6 +36,16 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("VocLearner"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Container(
         margin: const EdgeInsets.only(left: 10, right: 10),
