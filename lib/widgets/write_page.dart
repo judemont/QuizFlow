@@ -12,6 +12,7 @@ class WritePage extends StatefulWidget {
 
 class _WritePageState extends State<WritePage> {
   late Word actualWord;
+  late List<Word> wordsToLearn;
   TextEditingController answerController = TextEditingController();
   bool displayGoodAnswerText = false;
   bool wrongAnswer = false;
@@ -21,22 +22,27 @@ class _WritePageState extends State<WritePage> {
   String inputLabelText = "";
   final int waitTimeAfterCorrectAnswer = 2;
   int actualWordIndex = 0;
+  List<Word> incorrectWords = [];
 
   @override
   void initState() {
+    List<Word> wordsToLearn = widget.words..shuffle();
+
     nextWord();
     super.initState();
   }
 
   void nextWord() {
-    actualWordIndex++;
-    setState(() {
-      inputLabelText = defaultInputLabelText;
-      displayGoodAnswerText = false;
-      wrongAnswer = false;
-      actualWord = widget.words[actualWordIndex];
-      answerController.clear();
-    });
+    if (actualWordIndex < wordsToLearn.length) {
+      actualWordIndex++;
+      setState(() {
+        inputLabelText = defaultInputLabelText;
+        displayGoodAnswerText = false;
+        wrongAnswer = false;
+        actualWord = wordsToLearn[actualWordIndex];
+        answerController.clear();
+      });
+    } else {}
   }
 
   Future<void> onTrue() async {
@@ -53,6 +59,9 @@ class _WritePageState extends State<WritePage> {
 
   void onWrong() {
     print("bad answer");
+    wordsToLearn.add(actualWord);
+    incorrectWords.add(actualWord);
+
     setState(() {
       wrongAnswer = true;
       answerController.clear();
