@@ -21,28 +21,28 @@ class _WritePageState extends State<WritePage> {
   final String defaultInputLabelText = "Type the term";
   String inputLabelText = "";
   final int waitTimeAfterCorrectAnswer = 2;
-  int actualWordIndex = 0;
   List<Word> incorrectWords = [];
 
   @override
   void initState() {
     wordsToLearn = widget.words..shuffle();
-
     nextWord();
     super.initState();
   }
 
   void nextWord() {
-    if (actualWordIndex < wordsToLearn.length - 1) {
-      actualWordIndex++;
+    print(wordsToLearn.map((e) => e.word).toList());
+    if (wordsToLearn.isNotEmpty) {
       setState(() {
         inputLabelText = defaultInputLabelText;
         displayGoodAnswerText = false;
         wrongAnswer = false;
-        actualWord = wordsToLearn[actualWordIndex];
+        actualWord = wordsToLearn[0];
         answerController.clear();
       });
-    } else {}
+    } else {
+      print("No more words to learn");
+    }
   }
 
   Future<void> onTrue() async {
