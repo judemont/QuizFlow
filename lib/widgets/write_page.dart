@@ -47,6 +47,7 @@ class _WritePageState extends State<WritePage> {
 
   Future<void> onTrue() async {
     print("good answer");
+    wordsToLearn.removeAt(0);
     setState(() {
       wrongAnswer = false;
       displayGoodAnswerText = true;
@@ -59,8 +60,10 @@ class _WritePageState extends State<WritePage> {
 
   void onWrong() {
     print("bad answer");
-    wordsToLearn.add(actualWord);
-    incorrectWords.add(actualWord);
+    if (!incorrectWords.contains(actualWord)) {
+      wordsToLearn.add(actualWord);
+      incorrectWords.add(actualWord);
+    }
 
     setState(() {
       wrongAnswer = true;
