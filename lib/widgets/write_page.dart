@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:voclearner/models/word.dart';
+import 'package:voclearner/widgets/result_page.dart';
 
 class WritePage extends StatefulWidget {
   final List<Word> words;
@@ -32,6 +33,7 @@ class _WritePageState extends State<WritePage> {
 
   void nextWord() {
     print(wordsToLearn.map((e) => e.word).toList());
+    print(widget.words);
     if (wordsToLearn.isNotEmpty) {
       setState(() {
         inputLabelText = defaultInputLabelText;
@@ -41,7 +43,21 @@ class _WritePageState extends State<WritePage> {
         answerController.clear();
       });
     } else {
-      print("No more words to learn");
+      print(widget.words);
+      List<Word> completedWords = widget.words;
+      print(completedWords);
+      print("AA");
+
+      completedWords.removeWhere((e) => incorrectWords.contains(e));
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => ResultPage(
+            correctWords: completedWords,
+            incorrectWords: incorrectWords,
+          ),
+        ),
+      );
     }
   }
 
