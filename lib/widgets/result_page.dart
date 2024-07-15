@@ -78,7 +78,7 @@ class _ResultPageState extends State<ResultPage> {
                     itemBuilder: (context, index) {
                       return WordCard(word: widget.incorrectWords[index]);
                     }),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.of(context).push(
