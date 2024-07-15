@@ -13,7 +13,7 @@ class WritePage extends StatefulWidget {
 
 class _WritePageState extends State<WritePage> {
   late Word actualWord;
-  late List<Word> wordsToLearn;
+  List<Word> wordsToLearn = [];
   TextEditingController answerController = TextEditingController();
   bool displayGoodAnswerText = false;
   bool wrongAnswer = false;
@@ -26,7 +26,7 @@ class _WritePageState extends State<WritePage> {
 
   @override
   void initState() {
-    wordsToLearn = widget.words..shuffle();
+    wordsToLearn.addAll(widget.words..shuffle());
     nextWord();
     super.initState();
   }
