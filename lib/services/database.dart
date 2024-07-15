@@ -1,4 +1,3 @@
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -113,6 +112,11 @@ class DatabaseService {
   static Future<void> removeWord(int wordId) async {
     final db = await DatabaseService.initializeDb();
     db.delete("Words", where: "id = $wordId");
+  }
+
+  static Future<void> removeWordsFromVoc(int vocId) async {
+    final db = await DatabaseService.initializeDb();
+    db.delete("Words", where: "vocId = $vocId");
   }
 
   static Future<void> updateVoc(Voc voc) async {

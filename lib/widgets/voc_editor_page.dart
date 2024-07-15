@@ -77,21 +77,16 @@ class _VocEditorPageState extends State<VocEditorPage> {
           Voc(title: title, description: description, id: vocId));
     }
 
+    if (widget.initialWords != null) {
+      // TO BE FIXED !;
+      print("updates words");
+      await DatabaseService.removeWordsFromVoc(vocId);
+    }
     for (int i = 0; i < wordsControllers.length; i++) {
-      if (widget.initialWords == null) {
-        await DatabaseService.createWord(Word(
-            vocId: vocId,
-            word: wordsControllers[i][0].text,
-            definition: wordsControllers[i][1].text));
-      } else {
-        // TO BE FIXED !;
-        print("updates words");
-        await DatabaseService.updateWord(Word(
-            id: widget.initialWords![i].id,
-            vocId: vocId,
-            word: wordsControllers[i][0].text,
-            definition: wordsControllers[i][1].text));
-      }
+      await DatabaseService.createWord(Word(
+          vocId: vocId,
+          word: wordsControllers[i][0].text,
+          definition: wordsControllers[i][1].text));
     }
     return;
   }
