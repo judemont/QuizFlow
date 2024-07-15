@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/models/word.dart';
+import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/widgets/word_card.dart';
+
+import 'write_page.dart';
 
 class ResultPage extends StatefulWidget {
   final List<Word> correctWords;
@@ -46,7 +49,7 @@ class _ResultPageState extends State<ResultPage> {
                 ),
                 Text(
                   "${widget.correctWords.length} Correct Words 😊👏:",
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 const SizedBox(
                   height: 10,
@@ -63,7 +66,7 @@ class _ResultPageState extends State<ResultPage> {
                 ),
                 Text(
                   "${widget.incorrectWords.length} Incorrect Words 🫣:",
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 const SizedBox(
                   height: 10,
@@ -74,7 +77,25 @@ class _ResultPageState extends State<ResultPage> {
                     itemCount: widget.incorrectWords.length,
                     itemBuilder: (context, index) {
                       return WordCard(word: widget.incorrectWords[index]);
-                    })
+                    }),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => PagesLayout(
+                              displayNavBar: false,
+                              child: WritePage(
+                                words: [
+                                  ...widget.correctWords,
+                                  ...widget.incorrectWords
+                                ],
+                              ))),
+                    );
+                  },
+                  label: const Text("Try Again"),
+                  icon: const Icon(Icons.restart_alt),
+                ),
               ],
             ),
           ),

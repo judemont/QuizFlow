@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:voclearner/models/word.dart';
 import 'package:voclearner/widgets/result_page.dart';
 
