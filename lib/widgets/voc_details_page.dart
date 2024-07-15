@@ -3,6 +3,7 @@ import 'package:voclearner/models/voc.dart';
 import 'package:voclearner/models/word.dart';
 import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/services/database.dart';
+import 'package:voclearner/widgets/voc_editor_page.dart';
 import 'package:voclearner/widgets/word_card.dart';
 import 'package:voclearner/widgets/write_page.dart';
 
@@ -39,7 +40,15 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => VocEditorPage(
+                            initialVoc: widget.voc,
+                            initialWords: words,
+                          )));
+            },
           ),
           IconButton(
             icon: Icon(Icons.delete),
