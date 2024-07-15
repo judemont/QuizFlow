@@ -118,12 +118,13 @@ class _VocEditorPageState extends State<VocEditorPage> {
                 if (newVocFormKey.currentState!.validate()) {
                   newVocFormKey.currentState!.save();
 
-                  save().then((v) => Navigator.of(context).pushReplacement(
+                  save().then((v) => Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                             builder: (context) => const PagesLayout(
                                   currentSection: 0,
                                   child: HomePage(),
                                 )),
+                        (Route<dynamic> route) => false,
                       ));
                 }
               })

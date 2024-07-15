@@ -42,16 +42,13 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PagesLayout(
-                        currentSection: 1,
-                        child: VocEditorPage(
+                    builder: (context) => VocEditorPage(
                           initialVoc: widget.voc,
                           initialWords: words,
-                        ))),
-                (Route<dynamic> route) => false,
+                        )),
               );
             },
           ),
