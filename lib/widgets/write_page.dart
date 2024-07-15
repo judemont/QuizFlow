@@ -137,7 +137,9 @@ class _WritePageState extends State<WritePage> {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                    child: Form(
+                  child: TextFormField(
+                    onFieldSubmitted: (v) => onSubmit(),
                     controller: answerController,
                     autofocus: true,
                     autocorrect: false,
@@ -145,7 +147,7 @@ class _WritePageState extends State<WritePage> {
                       labelText: inputLabelText,
                     ),
                   ),
-                ),
+                )),
                 const SizedBox(width: 10),
                 IconButton(
                     onPressed: () => onSubmit(), icon: const Icon(Icons.send))
