@@ -115,12 +115,12 @@ class _WritePageState extends State<WritePage> {
               visible: wrongAnswer,
               child: Column(children: [
                 Text(
-                  "Correct answer: '${actualWord.definition}'",
+                  "Correct answer: \"${actualWord.definition}\"",
                   style: const TextStyle(
                       color: Colors.green, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                Text("Your answer: '$userAnswer' 🫣",
+                Text("Your answer: \"$userAnswer\" 🫣",
                     style: const TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
               ]),
