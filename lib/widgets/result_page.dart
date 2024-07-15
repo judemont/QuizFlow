@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:voclearner/models/word.dart';
+import 'package:voclearner/widgets/word_card.dart';
 
 class ResultPage extends StatefulWidget {
   final List<Word> correctWords;
@@ -29,17 +30,54 @@ class _ResultPageState extends State<ResultPage> {
             : 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Result")),
-      body: Container(
-        child: Column(
-          children: [
-            Text(
-              "$correctPercentage %",
-              style: const TextStyle(fontSize: 20),
-            )
-          ],
-        ),
-      ),
-    );
+        appBar: AppBar(title: const Text("Result")),
+        body: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: [
+                Center(
+                  child: Text(
+                    "$correctPercentage%",
+                    style: const TextStyle(fontSize: 40),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "${widget.correctWords.length} Correct Words 😊👏:",
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: widget.correctWords.length,
+                    itemBuilder: (context, index) {
+                      return WordCard(word: widget.correctWords[index]);
+                    }),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "${widget.incorrectWords.length} Incorrect Words 🫣:",
+                  style: TextStyle(fontSize: 20),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: widget.incorrectWords.length,
+                    itemBuilder: (context, index) {
+                      return WordCard(word: widget.incorrectWords[index]);
+                    })
+              ],
+            ),
+          ),
+        ));
   }
 }

@@ -17,7 +17,7 @@ class _WritePageState extends State<WritePage> {
   TextEditingController answerController = TextEditingController();
   bool displayGoodAnswerText = false;
   bool wrongAnswer = false;
-  String goodAnswerText = "Good answer ! D;";
+  String goodAnswerText = "Good answer ! 😊👏";
   String userAnswer = "";
   final String defaultInputLabelText = "Type the term";
   String inputLabelText = "";
@@ -121,7 +121,7 @@ class _WritePageState extends State<WritePage> {
                       color: Colors.green, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                Text("Your answer: '$userAnswer'",
+                Text("Your answer: '$userAnswer' 🫣",
                     style: const TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
               ]),
