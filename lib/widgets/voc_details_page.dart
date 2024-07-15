@@ -3,6 +3,7 @@ import 'package:voclearner/models/voc.dart';
 import 'package:voclearner/models/word.dart';
 import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/services/database.dart';
+import 'package:voclearner/widgets/home_page.dart';
 import 'package:voclearner/widgets/voc_editor_page.dart';
 import 'package:voclearner/widgets/word_card.dart';
 import 'package:voclearner/widgets/write_page.dart';
@@ -39,20 +40,36 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
         title: const Text("VocLearner"),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => VocEditorPage(
-                            initialVoc: widget.voc,
-                            initialWords: words,
-                          )));
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PagesLayout(
+                        currentSection: 1,
+                        child: VocEditorPage(
+                          initialVoc: widget.voc,
+                          initialWords: words,
+                        ))),
+                (Route<dynamic> route) => false,
+              );
             },
           ),
           IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {},
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              DatabaseService.removeVoc(widget.voc.id!).then((value) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => const PagesLayout(
+                      currentSection: 0,
+                      child: HomePage(),
+                    ),
+                  ),
+                  (Route<dynamic> route) => false,
+                );
+              });
+            },
           ),
         ],
       ),

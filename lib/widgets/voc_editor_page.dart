@@ -110,7 +110,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("New Voc"),
+        title: Text(widget.initialVoc == null ? "New Voc" : "Edit Voc"),
         actions: [
           IconButton(
               icon: const Icon(Icons.save),
