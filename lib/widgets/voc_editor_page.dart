@@ -83,10 +83,13 @@ class _VocEditorPageState extends State<VocEditorPage> {
       await DatabaseService.removeWordsFromVoc(vocId);
     }
     for (int i = 0; i < wordsControllers.length; i++) {
-      await DatabaseService.createWord(Word(
-          vocId: vocId,
-          word: wordsControllers[i][0].text,
-          definition: wordsControllers[i][1].text));
+      if (wordsControllers[i][0].text.isNotEmpty &&
+          wordsControllers[i][1].text.isNotEmpty) {
+        await DatabaseService.createWord(Word(
+            vocId: vocId,
+            word: wordsControllers[i][0].text,
+            definition: wordsControllers[i][1].text));
+      }
     }
     return;
   }
