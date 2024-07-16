@@ -95,6 +95,9 @@ class _ResultPageState extends State<ResultPage> {
                   label: const Text("Cancel"),
                   icon: const Icon(Icons.cancel_presentation_outlined),
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
               ],
             ),
           ),
