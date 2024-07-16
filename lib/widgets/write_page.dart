@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/word.dart';
+import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/widgets/result_page.dart';
 
 class WritePage extends StatefulWidget {
@@ -54,6 +55,12 @@ class _WritePageState extends State<WritePage> {
           builder: (context) => ResultPage(
             correctWords: completedWords,
             incorrectWords: incorrectWords,
+            tryAgainPage: MaterialPageRoute(
+                builder: (context) => PagesLayout(
+                    displayNavBar: false,
+                    child: WritePage(
+                      words: widget.words,
+                    ))),
           ),
         ),
       );

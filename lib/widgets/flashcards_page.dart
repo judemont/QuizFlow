@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/word.dart';
+import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/widgets/flashcard.dart';
 import 'package:quizflow/widgets/result_page.dart';
 
@@ -18,7 +19,8 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
   int cardIndex = 0;
 
   void endOfGame() {
-    List<Word> completedWords = widget.words;
+    List<Word> completedWords = [];
+    completedWords.addAll(widget.words);
     print(completedWords);
     print("AA");
 
@@ -29,6 +31,12 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         builder: (context) => ResultPage(
           correctWords: completedWords,
           incorrectWords: incorrectWords,
+          tryAgainPage: MaterialPageRoute(
+              builder: (context) => PagesLayout(
+                  displayNavBar: false,
+                  child: FlashcardsPage(
+                    words: widget.words,
+                  ))),
         ),
       ),
     );
