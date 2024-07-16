@@ -65,7 +65,7 @@ class _ResultPageState extends State<ResultPage> {
                   height: 30,
                 ),
                 Text(
-                  "${widget.incorrectWords.length} Incorrect Words 🫣:",
+                  "${widget.incorrectWords.length} Incorrect Words 🫣💩:",
                   style: const TextStyle(fontSize: 20),
                 ),
                 const SizedBox(
