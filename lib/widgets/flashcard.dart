@@ -32,7 +32,7 @@ class _FlashCardState extends State<FlashCard> {
               : widget.onSwipeRight();
         },
         key: UniqueKey(),
-        child: GestureDetector(,
+        child: GestureDetector(
             onTap: () {
               setState(() {
                 flashCardFace = !flashCardFace;
