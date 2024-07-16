@@ -23,7 +23,6 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         onSwipeRight: () {},
         word: word,
         onDismissibleUpdate: (detail) {
-          print("YEAH");
           setState(() {
             if (detail.direction == DismissDirection.startToEnd) {
               topMessage = "I know it !";
@@ -44,7 +43,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Flashcards')),
       body: Column(children: [
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         SizedBox(
@@ -53,7 +52,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
               visible: topMessage != null,
               child: Text(
                 topMessage ?? "",
-                style: TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 20),
               ),
             )),
         Stack(
