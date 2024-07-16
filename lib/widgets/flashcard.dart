@@ -4,8 +4,8 @@ import 'package:quizflow/models/word.dart';
 
 class FlashCard extends StatefulWidget {
   final Word word;
-  final Function onSwipeLeft;
-  final Function onSwipeRight;
+  final void Function(Word) onSwipeLeft;
+  final void Function(Word) onSwipeRight;
   final void Function(DismissUpdateDetails)? onDismissibleUpdate;
 
   const FlashCard(
@@ -28,8 +28,8 @@ class _FlashCardState extends State<FlashCard> {
         onUpdate: widget.onDismissibleUpdate,
         onDismissed: (direction) {
           direction == DismissDirection.endToStart
-              ? widget.onSwipeLeft()
-              : widget.onSwipeRight();
+              ? widget.onSwipeLeft(widget.word)
+              : widget.onSwipeRight(widget.word);
         },
         key: UniqueKey(),
         child: GestureDetector(
