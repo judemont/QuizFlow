@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/word.dart';
-import 'package:voclearner/widgets/flashcard.dart';
+import 'package:quizflow/models/word.dart';
+import 'package:quizflow/widgets/flashcard.dart';
 
 class FlashcardsPage extends StatefulWidget {
   final List<Word> words;

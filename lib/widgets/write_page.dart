@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/word.dart';
-import 'package:voclearner/widgets/result_page.dart';
+import 'package:quizflow/models/word.dart';
+import 'package:quizflow/widgets/result_page.dart';
 
 class WritePage extends StatefulWidget {
   final List<Word> words;

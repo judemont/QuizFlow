@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/pages_layout.dart';
-import 'package:voclearner/widgets/home_page.dart';
+import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/widgets/home_page.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {

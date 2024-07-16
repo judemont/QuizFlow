@@ -1,4 +1,4 @@
-package com.example.voclearner
+package jdm.apps.quizflow
 
 import io.flutter.embedding.android.FlutterActivity
 

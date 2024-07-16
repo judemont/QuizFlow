@@ -1,6 +1,6 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/word.dart';
+import 'package:quizflow/models/word.dart';
 
 class FlashCard extends StatefulWidget {
   final Word word;

@@ -1,11 +1,11 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:voclearner/models/voc.dart';
-import 'package:voclearner/models/word.dart';
+import 'package:quizflow/models/voc.dart';
+import 'package:quizflow/models/word.dart';
 
 class DatabaseService {
-  static const String databaseName = "voclearnerDB.sqlite";
+  static const String databaseName = "quizflowDB.sqlite";
   static Database? db;
 
   static const databaseVersion = 1;

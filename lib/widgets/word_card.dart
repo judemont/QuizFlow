@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/word.dart';
+import 'package:quizflow/models/word.dart';
 
 class WordCard extends StatelessWidget {
   final Word word;

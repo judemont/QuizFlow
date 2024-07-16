@@ -1,6 +1,6 @@
 {
-    "name": "voclearner",
-    "short_name": "voclearner",
+    "name": "quizflow",
+    "short_name": "quizflow",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

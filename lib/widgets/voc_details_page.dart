@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/voc.dart';
-import 'package:voclearner/models/word.dart';
-import 'package:voclearner/pages_layout.dart';
-import 'package:voclearner/services/database.dart';
-import 'package:voclearner/widgets/flashcards_page.dart';
-import 'package:voclearner/widgets/home_page.dart';
-import 'package:voclearner/widgets/voc_editor_page.dart';
-import 'package:voclearner/widgets/word_card.dart';
-import 'package:voclearner/widgets/write_page.dart';
+import 'package:quizflow/models/voc.dart';
+import 'package:quizflow/models/word.dart';
+import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/services/database.dart';
+import 'package:quizflow/widgets/flashcards_page.dart';
+import 'package:quizflow/widgets/home_page.dart';
+import 'package:quizflow/widgets/voc_editor_page.dart';
+import 'package:quizflow/widgets/word_card.dart';
+import 'package:quizflow/widgets/write_page.dart';
 
 class VocDetailsPage extends StatefulWidget {
   final Voc voc;
@@ -38,7 +38,7 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("VocLearner"),
+        title: const Text("quizflow"),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),

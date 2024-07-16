@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/widgets/voc_editor_page.dart';
-import 'package:voclearner/widgets/settings_page.dart';
-import 'package:voclearner/widgets/home_page.dart';
+import 'package:quizflow/widgets/voc_editor_page.dart';
+import 'package:quizflow/widgets/settings_page.dart';
+import 'package:quizflow/widgets/home_page.dart';
 
 class PagesLayout extends StatefulWidget {
   final Widget child;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/voc.dart';
-import 'package:voclearner/pages_layout.dart';
-import 'package:voclearner/services/database.dart';
-import 'package:voclearner/widgets/voc_details_page.dart';
+import 'package:quizflow/models/voc.dart';
+import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/services/database.dart';
+import 'package:quizflow/widgets/voc_details_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("VocLearner"),
+        title: const Text("QuizFlow"),
       ),
       body: ListView.builder(
         itemBuilder: (BuildContext context, index) {

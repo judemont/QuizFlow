@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/word.dart';
-import 'package:voclearner/pages_layout.dart';
-import 'package:voclearner/widgets/word_card.dart';
+import 'package:quizflow/models/word.dart';
+import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/widgets/word_card.dart';
 
 import 'write_page.dart';
 

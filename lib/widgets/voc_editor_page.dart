@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:voclearner/models/voc.dart';
-import 'package:voclearner/models/word.dart';
-import 'package:voclearner/pages_layout.dart';
-import 'package:voclearner/services/database.dart';
-import 'package:voclearner/widgets/home_page.dart';
-import 'package:voclearner/widgets/word_editor_card.dart';
+import 'package:quizflow/models/voc.dart';
+import 'package:quizflow/models/word.dart';
+import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/services/database.dart';
+import 'package:quizflow/widgets/home_page.dart';
+import 'package:quizflow/widgets/word_editor_card.dart';
 
 class VocEditorPage extends StatefulWidget {
   final List<Word>? initialWords;
