@@ -66,13 +66,15 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         },
         word: word,
         onDismissibleUpdate: (detail) {
-          if (detail.direction == DismissDirection.startToEnd) {
-            topMessage = "I know it ! 😊👏";
-          } else if (detail.direction == DismissDirection.endToStart) {
-            topMessage = "I still need to train it 🫣💩";
-          } else {
-            topMessage = null;
-          }
+          setState(() {
+            if (detail.direction == DismissDirection.startToEnd) {
+              topMessage = "I know it ! 😊👏";
+            } else if (detail.direction == DismissDirection.endToStart) {
+              topMessage = "I still need to train it 🫣💩";
+            } else {
+              topMessage = null;
+            }
+          });
         },
       )));
     });
