@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/word.dart';
-import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/widgets/word_card.dart';
-
-import 'write_page.dart';
 
 class ResultPage extends StatefulWidget {
   final List<Word> correctWords;
