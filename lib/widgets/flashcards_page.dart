@@ -31,11 +31,11 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         builder: (context) => ResultPage(
           correctWords: completedWords,
           incorrectWords: incorrectWords,
-          tryAgainPage: MaterialPageRoute(
+          tryAgainWithIncorrectPage: MaterialPageRoute(
               builder: (context) => PagesLayout(
                   displayNavBar: false,
                   child: FlashcardsPage(
-                    words: widget.words,
+                    words: incorrectWords,
                   ))),
         ),
       ),

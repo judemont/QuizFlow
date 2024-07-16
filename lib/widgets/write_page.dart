@@ -55,11 +55,11 @@ class _WritePageState extends State<WritePage> {
           builder: (context) => ResultPage(
             correctWords: completedWords,
             incorrectWords: incorrectWords,
-            tryAgainPage: MaterialPageRoute(
+            tryAgainWithIncorrectPage: MaterialPageRoute(
                 builder: (context) => PagesLayout(
                     displayNavBar: false,
                     child: WritePage(
-                      words: widget.words,
+                      words: incorrectWords,
                     ))),
           ),
         ),

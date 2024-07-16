@@ -8,12 +8,13 @@ import 'write_page.dart';
 class ResultPage extends StatefulWidget {
   final List<Word> correctWords;
   final List<Word> incorrectWords;
-  final MaterialPageRoute<dynamic> tryAgainPage;
+  final MaterialPageRoute<dynamic> tryAgainWithIncorrectPage;
+
   const ResultPage({
     super.key,
     required this.correctWords,
     required this.incorrectWords,
-    required this.tryAgainPage,
+    required this.tryAgainWithIncorrectPage,
   });
 
   @override
@@ -83,20 +84,19 @@ class _ResultPageState extends State<ResultPage> {
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(widget.tryAgainPage
-                        // MaterialPageRoute(
-                        //     builder: (context) => PagesLayout(
-                        //         displayNavBar: false,
-                        //         child: widget.tryAgainPage(
-                        //           words: [
-                        //             ...widget.correctWords,
-                        //             ...widget.incorrectWords
-                        //           ],
-                        //         ))),
-                        );
+                    Navigator.of(context)
+                        .pushReplacement(widget.tryAgainWithIncorrectPage);
                   },
-                  label: const Text("Try Again"),
-                  icon: const Icon(Icons.restart_alt),
+                  label: const Text("Practice words you don't know"),
+                  icon: const Icon(Icons.model_training),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  label: const Text("Cancel"),
+                  icon: const Icon(Icons.cancel_presentation_outlined),
                 ),
               ],
             ),
