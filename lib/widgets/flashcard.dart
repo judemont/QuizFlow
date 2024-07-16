@@ -6,12 +6,14 @@ class FlashCard extends StatefulWidget {
   final Word word;
   final Function onSwipeLeft;
   final Function onSwipeRight;
+  final void Function(DismissUpdateDetails)? onDismissibleUpdate;
 
   const FlashCard(
       {super.key,
       required this.word,
       required this.onSwipeLeft,
-      required this.onSwipeRight});
+      required this.onSwipeRight,
+      this.onDismissibleUpdate});
 
   @override
   _FlashCardState createState() => _FlashCardState();
@@ -19,10 +21,11 @@ class FlashCard extends StatefulWidget {
 
 class _FlashCardState extends State<FlashCard> {
   bool flashCardFace = false;
-
+  Color bgColor = Colors.transparent;
   @override
   Widget build(BuildContext context) {
     return Dismissible(
+        onUpdate: widget.onDismissibleUpdate,
         onDismissed: (direction) {
           direction == DismissDirection.endToStart
               ? widget.onSwipeLeft()
@@ -37,9 +40,12 @@ class _FlashCardState extends State<FlashCard> {
             },
             child: FlipCard(
                 direction: FlipDirection.HORIZONTAL,
-                front: FlashcardCard(cardContent: widget.word.word ?? ""),
-                back:
-                    FlashcardCard(cardContent: widget.word.definition ?? ""))));
+                front: FlashcardCard(
+                  cardContent: widget.word.word ?? "",
+                ),
+                back: FlashcardCard(
+                  cardContent: widget.word.definition ?? "",
+                ))));
   }
 }
 
@@ -50,9 +56,9 @@ class FlashcardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 80),
-          child: Text(cardContent)),
+      elevation: 20,
+      child: Container(
+          height: 400, width: 300, child: Center(child: Text(cardContent))),
     );
   }
 }

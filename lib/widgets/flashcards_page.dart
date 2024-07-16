@@ -11,37 +11,55 @@ class FlashcardsPage extends StatefulWidget {
 }
 
 class _FlashcardsPageState extends State<FlashcardsPage> {
-  late Word actualWord;
-  List<Word> wordsToLearn = [];
+  List<Widget> wordsCards = [];
+  String? topMessage = '';
 
   @override
   void initState() {
-    wordsToLearn.addAll(widget.words..shuffle());
-    nextCard();
+    for (var word in widget.words..shuffle()) {
+      wordsCards.add(Center(
+          child: FlashCard(
+        onSwipeLeft: () {},
+        onSwipeRight: () {},
+        word: word,
+        onDismissibleUpdate: (detail) {
+          print("YEAH");
+          setState(() {
+            if (detail.direction == DismissDirection.startToEnd) {
+              topMessage = "I know it !";
+            } else if (detail.direction == DismissDirection.endToStart) {
+              topMessage = "I still need to train it";
+            } else {
+              topMessage = null;
+            }
+          });
+        },
+      )));
+    }
     super.initState();
-  }
-
-  void nextCard() {
-    setState(() {
-      actualWord = wordsToLearn[0];
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Flashcards')),
-      body: Container(
-        child: Column(
-          children: [
-            FlashCard(
-              onSwipeLeft: () {},
-              onSwipeRight: () {},
-              word: actualWord,
-            ),
-          ],
+      body: Column(children: [
+        SizedBox(
+          height: 20,
         ),
-      ),
+        SizedBox(
+            height: 60,
+            child: Visibility(
+              visible: topMessage != null,
+              child: Text(
+                topMessage ?? "",
+                style: TextStyle(fontSize: 20),
+              ),
+            )),
+        Stack(
+          children: wordsCards,
+        ),
+      ]),
     );
   }
 }
