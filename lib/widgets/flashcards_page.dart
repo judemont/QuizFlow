@@ -34,7 +34,11 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
       body: Container(
         child: Column(
           children: [
-            Dismissible(key: UniqueKey(), child: FlashCard()),
+            FlashCard(
+              onSwipeLeft: () {},
+              onSwipeRight: () {},
+              word: actualWord,
+            ),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:voclearner/models/voc.dart';
 import 'package:voclearner/models/word.dart';
 import 'package:voclearner/pages_layout.dart';
 import 'package:voclearner/services/database.dart';
+import 'package:voclearner/widgets/flashcards_page.dart';
 import 'package:voclearner/widgets/home_page.dart';
 import 'package:voclearner/widgets/voc_editor_page.dart';
 import 'package:voclearner/widgets/word_card.dart';
@@ -114,7 +115,16 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => PagesLayout(
+                              displayNavBar: false,
+                              child: FlashcardsPage(
+                                words: words,
+                              ))),
+                    );
+                  },
                   label: const Text("Flashcards"),
                   icon: const Icon(Icons.dynamic_feed),
                 ),

@@ -14,6 +14,7 @@ dependencies:
   sqflite_common_ffi: ^2.3.3
 
   path: any
+  flip_card: ^0.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
