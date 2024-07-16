@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
-import 'package:quizflow/services/database.dart';
+import 'package:quizflow/utilities/database.dart';
 import 'package:quizflow/widgets/flashcards_page.dart';
 import 'package:quizflow/widgets/home_page.dart';
 import 'package:quizflow/widgets/voc_editor_page.dart';
