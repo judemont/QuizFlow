@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quizflow/utilities/database.dart';
 import 'package:quizflow/utilities/utils.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -38,7 +36,27 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () {
               Utils.userImport();
             },
-          )
+          ),
+          const SizedBox(),
+          const Text(
+            "About",
+            style: TextStyle(fontSize: 20),
+          ),
+          ListTile(
+            title: const Text("Source Code"),
+            leading: const Icon(Icons.code),
+            subtitle: const Text("github.com/judemont/QuizFlow"),
+            onTap: () =>
+                launchUrl(Uri.parse("https://github.com/judemont/QuizFlow")),
+          ),
+          ListTile(
+            title: const Text("Rate QuizFlow on Google Play"),
+            leading: const Icon(Icons.star),
+            subtitle: const Text(
+                "play.google.com/store/apps/details?id=jdm.apps.quizflow"),
+            onTap: () => launchUrl(Uri.parse(
+                "https://play.google.com/store/apps/details?id=jdm.apps.quizflow")),
+          ),
         ],
       ),
     );

@@ -57,7 +57,7 @@ class FlashcardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 20,
-      child: Container(
+      child: SizedBox(
           height: 400, width: 300, child: Center(child: Text(cardContent))),
     );
   }
