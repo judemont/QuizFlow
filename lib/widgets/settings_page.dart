@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quizflow/main.dart';
 import 'package:quizflow/utilities/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -10,6 +12,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String theme = "";
+
+  @override
+  void initState() {
+    SharedPreferences.getInstance().then((prefs) {
+      theme = prefs.getString('theme') ?? "system";
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,19 +35,61 @@ class _SettingsPageState extends State<SettingsPage> {
             style: TextStyle(fontSize: 20),
           ),
           ListTile(
-            title: const Text("Export"),
-            subtitle: const Text("Export all data"),
-            leading: const Icon(Icons.ios_share),
+            title: const Text("Theme"),
+            leading: const Icon(Icons.color_lens),
+            subtitle: Text(theme.toCapitalized()),
             onTap: () {
-              Utils.userExport();
-            },
-          ),
-          ListTile(
-            title: const Text("Import"),
-            subtitle: const Text("Import from file"),
-            leading: const Icon(Icons.download),
-            onTap: () {
-              Utils.userImport();
+              showModalBottomSheet(
+                  elevation: 0,
+                  context: context,
+                  builder: (context) {
+                    return ListView(
+                      children: [
+                        ListTile(
+                          title: const Text("Light"),
+                          leading: const Icon(Icons.light_mode),
+                          onTap: () {
+                            SharedPreferences.getInstance().then((prefs) {
+                              prefs.setString("theme", "light");
+                              MainApp.of(context)!.updateTheme();
+                              setState(() {
+                                theme = "light";
+                              });
+                              Navigator.of(context).pop();
+                            });
+                          },
+                        ),
+                        ListTile(
+                          title: const Text("Dark"),
+                          leading: const Icon(Icons.dark_mode),
+                          onTap: () {
+                            SharedPreferences.getInstance().then((prefs) {
+                              prefs.setString("theme", "dark");
+                              MainApp.of(context)!.updateTheme();
+                              setState(() {
+                                theme = "dark";
+                              });
+                              Navigator.of(context).pop();
+                            });
+                          },
+                        ),
+                        ListTile(
+                          title: const Text("System"),
+                          leading: const Icon(Icons.settings),
+                          onTap: () {
+                            SharedPreferences.getInstance().then((prefs) {
+                              prefs.setString("theme", "system");
+                              MainApp.of(context)!.updateTheme();
+                              setState(() {
+                                theme = "system";
+                              });
+                              Navigator.of(context).pop();
+                            });
+                          },
+                        ),
+                      ],
+                    );
+                  });
             },
           ),
           const SizedBox(),
@@ -61,4 +116,13 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+}
+
+extension StringCasingExtension on String {
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
 }
