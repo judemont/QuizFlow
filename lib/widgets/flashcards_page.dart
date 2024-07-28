@@ -70,7 +70,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
             if (detail.direction == DismissDirection.startToEnd) {
               topMessage = "I know it ! 😊👏";
             } else if (detail.direction == DismissDirection.endToStart) {
-              topMessage = "I still need to train it 🫣💩";
+              topMessage = "I still need to train it 🫣😳";
             } else {
               topMessage = null;
             }
