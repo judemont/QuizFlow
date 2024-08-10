@@ -38,7 +38,7 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("quizflow"),
+        title: const Text("QuizFlow"),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
