@@ -40,13 +40,17 @@ class _HomePageState extends State<HomePage> {
               child: Text("You don't have any words list yet 😮‍💨."))
           : GridView.count(
               padding: const EdgeInsets.only(top: 50),
-              childAspectRatio: (2),
+              childAspectRatio: (1),
               crossAxisCount: 2,
               mainAxisSpacing: 20,
               children: vocs
                   .map((voc) => VocCard(
-                        title: voc.title ?? "",
-                        description: voc.description,
+                        title: (voc.title ?? "").length < 40
+                            ? voc.title ?? ""
+                            : "${voc.title!.substring(0, 40)}...",
+                        description: (voc.description ?? "").length < 40
+                            ? voc.description
+                            : "${voc.description!.substring(0, 40)}...",
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
