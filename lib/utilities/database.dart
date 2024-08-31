@@ -134,51 +134,71 @@ class DatabaseService {
     db.update("Words", word.toMap(), where: 'id = ?', whereArgs: [word.id]);
   }
 
-  Future<String> export({bool isEncrypted = false}) async {
-    print('GENERATE BACKUP');
-
-    var dbs = await DatabaseService.initializeDb();
-
-    List data = [];
-
-    List<Map<String, dynamic>> listMaps = [];
-
-    for (var i = 0; i < tables.length; i++) {
-      listMaps = await dbs.query(tables[i]);
-
-      data.add(listMaps);
-    }
-
-    List backups = [tables, data];
-
-    String jsonData = jsonEncode(backups);
-    print(jsonData);
-    return jsonData;
+  static Future<String> exportVoc(Voc voc) async {
+    List<Word> words = await getWordsFromVoc(voc.id!);
+    Map result = voc.toMap();
+    List<Map<dynamic, dynamic>> wordsMap = words.map((e) => e.toMap()).toList();
+    result["words"] = wordsMap;
+    return jsonEncode(result);
   }
 
-  Future<void> import(String backup) async {
-    print(backup);
-    var dbs = await DatabaseService.initializeDb();
+  // static Future importVoc(String code) async {
+  //   Map<String, dynamic> jsonData = jsonDecode(code);
+  //   Voc voc = Voc.fromMap(jsonData);
+  //   int vocId = await createVoc(voc);
+  //   List<Map<String, dynamic>> wordsMap = jsonData["words"];
+  //   for (var i = 0; i < wordsMap.length; i++) {
+  //     wordsMap[i]["vocId"] = vocId;
+  //     Word word = Word.fromMap(wordsMap[i]);
+  //     await createWord(word);
+  //   }
+  // }
 
-    Batch batch = dbs.batch();
+  // Future<String> export({bool isEncrypted = false}) async {
+  //   print('GENERATE BACKUP');
 
-    List jsonData = jsonDecode(backup);
-    print(jsonData);
-    List<Voc> actualVocs = await DatabaseService.getVocs();
+  //   var dbs = await DatabaseService.initializeDb();
 
-    for (var i = 0; i < jsonData[0].length; i++) {
-      for (var k = 0; k < jsonData[1][i].length; k++) {
-        if (actualVocs
-            .where((recipe) => recipe.title == jsonData[1][i][k]["title"])
-            .isEmpty) {
-          jsonData[1][i][k]["id"] = null;
-          batch.insert(jsonData[0][i], jsonData[1][i][k]);
-        }
-      }
-    }
+  //   List data = [];
 
-    await batch.commit(continueOnError: false, noResult: true);
+  //   List<Map<String, dynamic>> listMaps = [];
 
-    print('RESTORE BACKUP');
-  }
+  //   for (var i = 0; i < tables.length; i++) {
+  //     listMaps = await dbs.query(tables[i]);
+
+  //     data.add(listMaps);
+  //   }
+
+  //   List backups = [tables, data];
+
+  //   String jsonData = jsonEncode(backups);
+  //   print(jsonData);
+  //   return jsonData;
+  // }
+
+  // Future<void> import(String backup) async {
+  //   print(backup);
+  //   var dbs = await DatabaseService.initializeDb();
+
+  //   Batch batch = dbs.batch();
+
+  //   List jsonData = jsonDecode(backup);
+  //   print(jsonData);
+  //   List<Voc> actualVocs = await DatabaseService.getVocs();
+
+  //   for (var i = 0; i < jsonData[0].length; i++) {
+  //     for (var k = 0; k < jsonData[1][i].length; k++) {
+  //       if (actualVocs
+  //           .where((recipe) => recipe.title == jsonData[1][i][k]["title"])
+  //           .isEmpty) {
+  //         jsonData[1][i][k]["id"] = null;
+  //         batch.insert(jsonData[0][i], jsonData[1][i][k]);
+  //       }
+  //     }
+  //   }
+
+  //   await batch.commit(continueOnError: false, noResult: true);
+
+  //   print('RESTORE BACKUP');
+  // }
 }

@@ -3,6 +3,7 @@ import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/utilities/database.dart';
+import 'package:quizflow/utilities/utils.dart';
 import 'package:quizflow/widgets/flashcards_page.dart';
 import 'package:quizflow/widgets/home_page.dart';
 import 'package:quizflow/widgets/voc_editor_page.dart';
@@ -41,19 +42,6 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
         title: const Text("QuizFlow"),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => VocEditorPage(
-                          initialVoc: widget.voc,
-                          initialWords: words,
-                        )),
-              );
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
               DatabaseService.removeVoc(widget.voc.id!).then((value) {
@@ -67,6 +55,25 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                   (Route<dynamic> route) => false,
                 );
               });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              Utils.userExportVoc(widget.voc);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => VocEditorPage(
+                          initialVoc: widget.voc,
+                          initialWords: words,
+                        )),
+              );
             },
           ),
         ],
