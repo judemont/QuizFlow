@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/utilities/database.dart';
+import 'package:quizflow/widgets/voc_card.dart';
 import 'package:quizflow/widgets/voc_details_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,36 +35,29 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("QuizFlow"),
       ),
-      body: ListView.builder(
-        itemBuilder: (BuildContext context, index) {
-          return ListTile(
-            title: Text(vocs[index].title ?? ""),
-            subtitle: Text(vocs[index].description ?? ""),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (context) => PagesLayout(
-                        displayNavBar: false,
-                        child: VocDetailsPage(
-                          voc: vocs[index],
-                        ))),
-              );
-            },
-          );
-
-          // GestureDetector(
-          //     onTap: () {},
-          //     child: Card(
-          //         child: Padding(
-          //             padding: const EdgeInsets.all(8.0),
-          //             child: Column(
-          //               children: [
-          //                 Text(vocs[index].title ?? ""),
-          //                 Text(vocs[index].description ?? "")
-          //               ],
-          //             ))));
-        },
-        itemCount: vocs.length,
+      body: GridView.count(
+        padding: const EdgeInsets.only(top: 50),
+        childAspectRatio: (2),
+        crossAxisCount: 2,
+        mainAxisSpacing: 20,
+        children: vocs
+            .map((voc) => VocCard(
+                  title: voc.title ?? "",
+                  description: voc.description,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PagesLayout(
+                          displayNavBar: false,
+                          child: VocDetailsPage(
+                            voc: voc,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ))
+            .toList(),
       ),
     );
   }
