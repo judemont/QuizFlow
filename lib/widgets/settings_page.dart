@@ -105,7 +105,9 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: const Text("Export lists from file"),
             leading: const Icon(Icons.download),
             onTap: () {
-              Utils.userImportAll();
+              Utils.userImportAll().then((v) {
+                Navigator.pop(context);
+              });
             },
           ),
           const SizedBox(),
