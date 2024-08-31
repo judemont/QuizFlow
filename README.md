@@ -30,4 +30,5 @@ Download QuizFlow today and elevate your vocabulary skills! 🌟
 <img src="https://github.com/user-attachments/assets/3b2fc423-ad36-44a8-8e9d-fc641bad919e" width="20%" alt="4">
 <img src="https://github.com/user-attachments/assets/75060841-aa84-4573-8ccb-5acaaa872b19" width="20%" alt="5">
 <img src="https://github.com/user-attachments/assets/6103a6fc-830b-4864-8054-b5e650885ec2" width="20%" alt="6">
-<img src="https://github.com/user-attachments/assets/93513d26-f5c6-4bf5-8c64-d54b52441dcd" width="20%" alt="7">
+<img src="https://github.com/user-attachments/assets/198aa4f4-8819-415a-a58f-cd45130c09b6" width="20%" alt="7">
+
