@@ -24,10 +24,10 @@ class _VocEditorPageState extends State<VocEditorPage> {
 
   void newCard({Word? initialWord}) {
     setState(() {
-      TextEditingController termController =
+      TextEditingController questionController =
           TextEditingController(text: initialWord?.word ?? "");
-      TextEditingController definitionController =
-          TextEditingController(text: initialWord?.definition ?? "");
+      TextEditingController answerController =
+          TextEditingController(text: initialWord?.answer ?? "");
 
       int wordIndex = wordsControllers.length + 1;
 
@@ -35,7 +35,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
         direction: DismissDirection.endToStart,
         onDismissed: (DismissDirection direction) {
           print('Dismissed with direction $direction');
-          print(definitionController.text);
+          print(answerController.text);
           wordsControllers.removeAt(wordIndex);
         },
         // confirmDismiss:
@@ -54,12 +54,12 @@ class _VocEditorPageState extends State<VocEditorPage> {
         ),
         key: UniqueKey(),
         child: WordEditorCard(
-          termController: termController,
-          definitionController: definitionController,
+          questionController: questionController,
+          answerController: answerController,
         ),
       ));
 
-      wordsControllers.add([termController, definitionController]);
+      wordsControllers.add([questionController, answerController]);
     });
   }
 
@@ -88,7 +88,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
         await DatabaseService.createWord(Word(
             vocId: vocId,
             word: wordsControllers[i][0].text,
-            definition: wordsControllers[i][1].text));
+            answer: wordsControllers[i][1].text));
       }
     }
     return;
@@ -113,7 +113,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.initialVoc == null ? "New Voc" : "Edit Voc"),
+        title: Text(widget.initialVoc == null ? "New List" : "Edit List"),
         actions: [
           IconButton(
               icon: const Icon(Icons.save),

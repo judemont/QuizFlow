@@ -44,7 +44,7 @@ class _FlashCardState extends State<FlashCard> {
                   cardContent: widget.word.word ?? "",
                 ),
                 back: FlashcardCard(
-                  cardContent: widget.word.definition ?? "",
+                  cardContent: widget.word.answer ?? "",
                 ))));
   }
 }

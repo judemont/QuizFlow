@@ -51,7 +51,7 @@ class _PagesLayoutState extends State<PagesLayout> {
                 destinations: const [
                   NavigationDestination(icon: Icon(Icons.home), label: "Home"),
                   NavigationDestination(
-                      icon: Icon(Icons.add_circle), label: "New Voc"),
+                      icon: Icon(Icons.add_circle), label: "New List"),
                   NavigationDestination(
                       icon: Icon(Icons.settings), label: "Settings")
                 ],
