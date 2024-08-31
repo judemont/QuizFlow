@@ -35,30 +35,33 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("QuizFlow"),
       ),
-      body: GridView.count(
-        padding: const EdgeInsets.only(top: 50),
-        childAspectRatio: (2),
-        crossAxisCount: 2,
-        mainAxisSpacing: 20,
-        children: vocs
-            .map((voc) => VocCard(
-                  title: voc.title ?? "",
-                  description: voc.description,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => PagesLayout(
-                          displayNavBar: false,
-                          child: VocDetailsPage(
-                            voc: voc,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ))
-            .toList(),
-      ),
+      body: vocs.isEmpty
+          ? const Center(
+              child: Text("You don't have any words list yet 😮‍💨."))
+          : GridView.count(
+              padding: const EdgeInsets.only(top: 50),
+              childAspectRatio: (2),
+              crossAxisCount: 2,
+              mainAxisSpacing: 20,
+              children: vocs
+                  .map((voc) => VocCard(
+                        title: voc.title ?? "",
+                        description: voc.description,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PagesLayout(
+                                displayNavBar: false,
+                                child: VocDetailsPage(
+                                  voc: voc,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ))
+                  .toList(),
+            ),
     );
   }
 }
