@@ -142,6 +142,21 @@ class DatabaseService {
     return jsonEncode(result);
   }
 
+  static Future importVoc(String backup) async {
+    Map<String, dynamic> jsonData = jsonDecode(backup);
+    Voc voc = Voc.fromMap(jsonData);
+    int vocId = await createVoc(voc);
+    List wordsMap = jsonData["words"];
+    for (var i = 0; i < wordsMap.length; i++) {
+      Map<String, dynamic> wordMap = wordsMap[i];
+      wordMap["vocId"] = vocId;
+      print(wordMap);
+
+      Word word = Word.fromMap(wordMap);
+      await createWord(word);
+    }
+  }
+
   // static Future importVoc(String code) async {
   //   Map<String, dynamic> jsonData = jsonDecode(code);
   //   Voc voc = Voc.fromMap(jsonData);
