@@ -106,10 +106,11 @@ class _SettingsPageState extends State<SettingsPage> {
             leading: const Icon(Icons.download),
             onTap: () {
               Utils.userImportAll().then((v) {
-                const SnackBar(
+                const snackBar = SnackBar(
                   duration: Duration(seconds: 1),
                   content: Text("Successfully imported"),
                 );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               });
             },
           ),
