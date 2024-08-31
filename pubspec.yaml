@@ -20,6 +20,7 @@ dependencies:
   file_selector: ^1.0.3
   url_launcher: ^6.3.0
   shared_preferences: ^2.2.3
+  flutter_archive: ^6.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

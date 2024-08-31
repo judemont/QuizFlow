@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/main.dart';
+import 'package:quizflow/utilities/database.dart';
+import 'package:quizflow/utilities/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_archive/flutter_archive.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -89,6 +92,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                     );
                   });
+            },
+          ),
+          ListTile(
+            title: const Text("Export"),
+            subtitle: const Text("Export all your lists"),
+            leading: const Icon(Icons.upload),
+            onTap: () {
+              Utils.userExportAll();
             },
           ),
           const SizedBox(),
