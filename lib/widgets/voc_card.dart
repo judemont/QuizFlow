@@ -8,7 +8,8 @@ class VocCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+        splashColor: Theme.of(context).colorScheme.secondary,
         onTap: onTap,
         child: Card(
           semanticContainer: true,
