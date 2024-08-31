@@ -6,12 +6,13 @@
 
 Master vocabulary effortlessly with QuizFlow:
 
+- 🆓 QuizFlow is open source, ad-free, and completely free for a seamless learning experience.
 - 📝 Create and organize custom word lists with ease.
 - 📊 Track your progress with detailed stats and reports.
 - 🎮 Interactive flashcards and quizzes for effective learning.
 - 🎨 Beautiful and stylish Material You design.
-- 🆓 QuizFlow is open source, ad-free, and completely free for a seamless learning experience.
 - 🌐 Fully offline - no internet required!
+- 🔄 Import and export vocabulary lists effortlessly to share and back up your learning.
 
 Download QuizFlow today and elevate your vocabulary skills! 🌟
  
