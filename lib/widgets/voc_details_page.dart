@@ -42,6 +42,12 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
         title: const Text("QuizFlow"),
         actions: [
           IconButton(
+            icon: const Icon(Icons.upload),
+            onPressed: () {
+              Utils.userExportVoc(widget.voc);
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
               DatabaseService.removeVoc(widget.voc.id!).then((value) {
@@ -55,12 +61,6 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                   (Route<dynamic> route) => false,
                 );
               });
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: () {
-              Utils.userExportVoc(widget.voc);
             },
           ),
           IconButton(

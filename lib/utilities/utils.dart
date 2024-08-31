@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/utilities/database.dart';
 
 import 'package:share_plus/share_plus.dart';
-import 'dart:convert';
 
 class Utils {
   static const Encoding _textFileEncoding = utf8;

@@ -6,7 +6,6 @@ import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/utilities/database.dart';
-import 'package:quizflow/utilities/utils.dart';
 import 'package:quizflow/widgets/home_page.dart';
 import 'package:quizflow/widgets/word_editor_card.dart';
 
