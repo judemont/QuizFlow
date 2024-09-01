@@ -1,8 +1,12 @@
 # 📚 QuizFlow - Your Ultimate Learning Companion! 🧠
-<a href='https://play.google.com/store/apps/details?id=jdm.apps.quizflow'>
-  <center><img src="https://github.com/judemont/reciper/assets/96385330/1e08569e-4450-4ba4-ac56-b06b43bb445a" width="170"></center>
+
+<a href='https://apt.izzysoft.de/fdroid/index/apk/jdm.apps.quizflow'>
+  <center><img src="https://github.com/user-attachments/assets/6dc3832e-7805-407b-96dd-d8a8d2f47f99" width="170"></center>
 </a>
 
+<a href='https://play.google.com/store/apps/details?id=jdm.apps.quizflow'>
+  <center><img src="https://github.com/user-attachments/assets/03c06842-3279-4393-b2bd-9165ce9f160b" width="170"></center>
+</a>
 
 Master vocabulary effortlessly with QuizFlow:
 
