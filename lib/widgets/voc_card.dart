@@ -9,6 +9,7 @@ class VocCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+        borderRadius: BorderRadius.circular(10.0),
         splashColor: Theme.of(context).colorScheme.secondary,
         onTap: onTap,
         child: Card(

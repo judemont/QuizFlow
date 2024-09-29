@@ -112,7 +112,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
         newCard(initialWord: word);
       }
     } else {
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 4; i++) {
         newCard();
       }
     }
