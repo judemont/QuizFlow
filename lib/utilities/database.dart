@@ -66,8 +66,8 @@ class DatabaseService {
     await database.execute("""
       CREATE TABLE Subsets(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          from INTEGER,
-          to INTEGER,
+          "from" INTEGER,
+          "to" INTEGER,
           vocId INTEGER
       )
     """);
