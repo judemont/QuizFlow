@@ -29,7 +29,6 @@ class _VocEditorPageState extends State<VocEditorPage> {
   String description = "";
   ValueNotifier<List<DismissibleCard>> wordsCards = ValueNotifier([]);
   ValueNotifier<List<DismissibleCard>> subsetsCards = ValueNotifier([]);
-  List<List<TextEditingController>> wordsControllers = [];
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
@@ -42,7 +41,6 @@ class _VocEditorPageState extends State<VocEditorPage> {
 
       wordsCards.value.add(DismissibleCard(
         editorCards: wordsCards,
-        textControllers: wordsControllers,
         onItemRemoved: () {
           setState(() {});
         },
@@ -51,8 +49,6 @@ class _VocEditorPageState extends State<VocEditorPage> {
           answerController: answerController,
         ),
       ));
-
-      wordsControllers.add([questionController, answerController]);
     });
   }
 
@@ -94,13 +90,24 @@ class _VocEditorPageState extends State<VocEditorPage> {
       print("updates words");
       await DatabaseService.removeWordsFromVoc(vocId);
     }
-    for (int i = 0; i < wordsControllers.length; i++) {
-      if (wordsControllers[i][0].text.isNotEmpty &&
-          wordsControllers[i][1].text.isNotEmpty) {
+    for (int i = 0; i < wordsCards.value.length; i++) {
+      if (wordsCards.value[i].child is WordEditorCard &&
+          (wordsCards.value[i].child as WordEditorCard)
+              .questionController
+              .text
+              .isNotEmpty &&
+          (wordsCards.value[i].child as WordEditorCard)
+              .answerController
+              .text
+              .isNotEmpty) {
         await DatabaseService.createWord(Word(
             vocId: vocId,
-            word: wordsControllers[i][0].text,
-            answer: wordsControllers[i][1].text));
+            word: (wordsCards.value[i].child as WordEditorCard)
+                .questionController
+                .text,
+            answer: (wordsCards.value[i].child as WordEditorCard)
+                .answerController
+                .text));
       }
     }
     if (widget.initialSubsets != null) {
@@ -109,7 +116,6 @@ class _VocEditorPageState extends State<VocEditorPage> {
       await DatabaseService.removeSubsetsFromVoc(vocId);
     }
     for (int i = 0; i < subsetsCards.value.length; i++) {
-      print(subsetsCards.value[i]);
       if (subsetsCards.value[i].child is SubsetEditorCard &&
           (subsetsCards.value[i].child as SubsetEditorCard).from != -1 &&
           (subsetsCards.value[i].child as SubsetEditorCard).to != -1) {
