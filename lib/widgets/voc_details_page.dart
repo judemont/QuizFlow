@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quizflow/models/subset.dart';
 import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
@@ -6,6 +7,7 @@ import 'package:quizflow/utilities/database.dart';
 import 'package:quizflow/utilities/utils.dart';
 import 'package:quizflow/widgets/flashcards_page.dart';
 import 'package:quizflow/widgets/home_page.dart';
+import 'package:quizflow/widgets/subset_card.dart';
 import 'package:quizflow/widgets/voc_editor_page.dart';
 import 'package:quizflow/widgets/word_card.dart';
 import 'package:quizflow/widgets/write_page.dart';
@@ -20,6 +22,7 @@ class VocDetailsPage extends StatefulWidget {
 
 class _VocDetailsPageState extends State<VocDetailsPage> {
   List<Word> words = [];
+  List<Subset> subsets = [];
 
   Future<void> loadWords() async {
     DatabaseService.getWordsFromVoc(widget.voc.id!).then((value) {
@@ -29,9 +32,18 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
     });
   }
 
+  Future<void> loadSubsets() async {
+    DatabaseService.getSubsetsFromVoc(widget.voc.id!).then((value) {
+      setState(() {
+        subsets = value;
+      });
+    });
+  }
+
   @override
   void initState() {
     loadWords();
+    loadSubsets();
     super.initState();
   }
 
@@ -71,6 +83,7 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                 MaterialPageRoute(
                     builder: (context) => VocEditorPage(
                           initialVoc: widget.voc,
+                          initialSubsets: subsets,
                           initialWords: words,
                         )),
               );
@@ -136,6 +149,20 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                   icon: const Icon(Icons.dynamic_feed),
                 ),
               ),
+              const SizedBox(height: 30),
+              const Text(
+                "Subsets:",
+                style: TextStyle(fontSize: 20),
+              ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: subsets.length,
+                  itemBuilder: (context, index) {
+                    return SubsetCard(
+                        words: words.sublist(subsets[index].from ?? 0,
+                            (subsets[index].to ?? words.length - 1) + 1));
+                  }),
               const SizedBox(height: 30),
               const Text(
                 "Words:",
