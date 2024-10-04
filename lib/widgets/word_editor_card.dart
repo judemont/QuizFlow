@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class WordEditorCard extends StatefulWidget {
-  final TextEditingController termController;
-  final TextEditingController definitionController;
+  final TextEditingController questionController;
+  final TextEditingController answerController;
 
   const WordEditorCard(
       {super.key,
-      required this.termController,
-      required this.definitionController});
+      required this.questionController,
+      required this.answerController});
 
   @override
   State<WordEditorCard> createState() => _WordEditorCardState();
@@ -22,17 +22,17 @@ class _WordEditorCardState extends State<WordEditorCard> {
         child: Column(
           children: [
             TextField(
-              controller: widget.termController,
+              controller: widget.questionController,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Term',
+                labelText: 'Question',
               ),
             ),
             TextField(
-              controller: widget.definitionController,
+              controller: widget.answerController,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'Definition',
+                labelText: 'Answer',
               ),
             )
           ],

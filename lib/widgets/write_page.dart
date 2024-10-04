@@ -19,7 +19,7 @@ class _WritePageState extends State<WritePage> {
   bool wrongAnswer = false;
   String goodAnswerText = "Good answer ! 😊👏";
   String userAnswer = "";
-  final String defaultInputLabelText = "Type the term";
+  final String defaultInputLabelText = "Type the question";
   String inputLabelText = "";
   final int waitTimeAfterCorrectAnswer = 2;
   List<Word> incorrectWords = [];
@@ -98,7 +98,7 @@ class _WritePageState extends State<WritePage> {
     setState(() {
       userAnswer = answerController.text;
     });
-    if (actualWord.definition == userAnswer) {
+    if (actualWord.answer == userAnswer) {
       onTrue();
     } else {
       onWrong();
@@ -122,7 +122,7 @@ class _WritePageState extends State<WritePage> {
               visible: wrongAnswer,
               child: Column(children: [
                 Text(
-                  "Correct answer: \"${actualWord.definition}\"",
+                  "Correct answer: \"${actualWord.answer}\"",
                   style: const TextStyle(
                       color: Colors.green, fontWeight: FontWeight.bold),
                 ),

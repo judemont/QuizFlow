@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/main.dart';
+import 'package:quizflow/utilities/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -89,6 +90,28 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                     );
                   });
+            },
+          ),
+          ListTile(
+            title: const Text("Export"),
+            subtitle: const Text("Export all your lists"),
+            leading: const Icon(Icons.upload),
+            onTap: () {
+              Utils.userExportAll();
+            },
+          ),
+          ListTile(
+            title: const Text("Import"),
+            subtitle: const Text("Export lists from file"),
+            leading: const Icon(Icons.download),
+            onTap: () {
+              Utils.userImportAll().then((v) {
+                const snackBar = SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text("Successfully imported"),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              });
             },
           ),
           const SizedBox(),

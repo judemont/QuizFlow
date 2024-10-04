@@ -1,13 +1,13 @@
 class Word {
   final int? id;
   final String? word;
-  final String? definition;
+  final String? answer;
   final int? vocId;
 
   const Word({
     this.id,
     this.word,
-    this.definition,
+    this.answer,
     this.vocId,
   });
 
@@ -15,7 +15,7 @@ class Word {
     return {
       'id': id,
       'word': word,
-      'definition': definition,
+      'definition': answer,
       'vocId': vocId,
     };
   }
@@ -24,7 +24,7 @@ class Word {
     return Word(
       id: map['id'],
       word: map['word'],
-      definition: map['definition'],
+      answer: map['definition'],
       vocId: map['vocId'],
     );
   }

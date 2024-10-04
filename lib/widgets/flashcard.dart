@@ -16,10 +16,10 @@ class FlashCard extends StatefulWidget {
       this.onDismissibleUpdate});
 
   @override
-  _FlashCardState createState() => _FlashCardState();
+  FlashCardState createState() => FlashCardState();
 }
 
-class _FlashCardState extends State<FlashCard> {
+class FlashCardState extends State<FlashCard> {
   bool flashCardFace = false;
   Color bgColor = Colors.transparent;
   @override
@@ -44,7 +44,7 @@ class _FlashCardState extends State<FlashCard> {
                   cardContent: widget.word.word ?? "",
                 ),
                 back: FlashcardCard(
-                  cardContent: widget.word.definition ?? "",
+                  cardContent: widget.word.answer ?? "",
                 ))));
   }
 }

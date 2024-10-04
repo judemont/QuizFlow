@@ -16,7 +16,7 @@ class WordCard extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(word.definition ?? "")
+            Text(word.answer ?? "")
           ],
         ),
       ),

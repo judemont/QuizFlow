@@ -15,13 +15,13 @@ class MainApp extends StatefulWidget {
   const MainApp({super.key});
 
   @override
-  _MainAppState createState() => _MainAppState();
+  MainAppState createState() => MainAppState();
 
-  static _MainAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MainAppState>();
+  static MainAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<MainAppState>();
 }
 
-class _MainAppState extends State<MainApp> {
+class MainAppState extends State<MainApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
   @override
@@ -33,6 +33,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
       theme: ThemeData(
         brightness: Brightness.light,

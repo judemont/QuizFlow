@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
@@ -21,13 +24,15 @@ class _VocEditorPageState extends State<VocEditorPage> {
   String description = "";
   List<Widget> wordsCards = [];
   List<List<TextEditingController>> wordsControllers = [];
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   void newCard({Word? initialWord}) {
     setState(() {
-      TextEditingController termController =
+      TextEditingController questionController =
           TextEditingController(text: initialWord?.word ?? "");
-      TextEditingController definitionController =
-          TextEditingController(text: initialWord?.definition ?? "");
+      TextEditingController answerController =
+          TextEditingController(text: initialWord?.answer ?? "");
 
       int wordIndex = wordsControllers.length + 1;
 
@@ -35,7 +40,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
         direction: DismissDirection.endToStart,
         onDismissed: (DismissDirection direction) {
           print('Dismissed with direction $direction');
-          print(definitionController.text);
+          print(answerController.text);
           wordsControllers.removeAt(wordIndex);
         },
         // confirmDismiss:
@@ -54,12 +59,12 @@ class _VocEditorPageState extends State<VocEditorPage> {
         ),
         key: UniqueKey(),
         child: WordEditorCard(
-          termController: termController,
-          definitionController: definitionController,
+          questionController: questionController,
+          answerController: answerController,
         ),
       ));
 
-      wordsControllers.add([termController, definitionController]);
+      wordsControllers.add([questionController, answerController]);
     });
   }
 
@@ -88,7 +93,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
         await DatabaseService.createWord(Word(
             vocId: vocId,
             word: wordsControllers[i][0].text,
-            definition: wordsControllers[i][1].text));
+            answer: wordsControllers[i][1].text));
       }
     }
     return;
@@ -96,25 +101,68 @@ class _VocEditorPageState extends State<VocEditorPage> {
 
   @override
   void initState() {
+    if (widget.initialVoc != null) {
+      titleController.text = widget.initialVoc!.title!;
+      descriptionController.text = widget.initialVoc!.description!;
+    }
+
     if (widget.initialWords != null) {
       print("BBBAA");
       for (Word word in widget.initialWords!) {
         newCard(initialWord: word);
       }
     } else {
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 4; i++) {
         newCard();
       }
     }
     super.initState();
   }
 
+  Future<void> userImportVoc() async {
+    const XTypeGroup typeGroup = XTypeGroup(
+      label: 'QuizFlow list export',
+      extensions: <String>['json'],
+    );
+    final XFile? file =
+        await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+
+    if (file != null) {
+      var fileBytes = await file.readAsBytes();
+      String backupContent = utf8.decode(fileBytes);
+      Map<String, dynamic> data = jsonDecode(backupContent);
+
+      for (var word in data["words"]) {
+        newCard(initialWord: Word.fromMap(word));
+      }
+      titleController.text = data["title"];
+      descriptionController.text = data["description"];
+    }
+  }
+
+  void handleImportMenuClick(String value) {
+    if (value == "Import from file") {
+      userImportVoc();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.initialVoc == null ? "New Voc" : "Edit Voc"),
+        title: Text(widget.initialVoc == null ? "New List" : "Edit List"),
         actions: [
+          PopupMenuButton(
+              icon: const Icon(Icons.download),
+              onSelected: handleImportMenuClick,
+              itemBuilder: (BuildContext context) {
+                return {'Import from file'}.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              }),
           IconButton(
               icon: const Icon(Icons.save),
               onPressed: () {
@@ -130,7 +178,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
                         (Route<dynamic> route) => false,
                       ));
                 }
-              })
+              }),
         ],
       ),
       body: SingleChildScrollView(
@@ -141,7 +189,8 @@ class _VocEditorPageState extends State<VocEditorPage> {
               child: Column(
                 children: [
                   TextFormField(
-                    initialValue: widget.initialVoc?.title ?? "",
+                    // initialValue: widget.initialVoc?.title ?? "",
+                    controller: titleController,
                     onSaved: (value) {
                       title = value!;
                     },
@@ -154,7 +203,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
                     height: 20,
                   ),
                   TextFormField(
-                    initialValue: widget.initialVoc?.description ?? "",
+                    controller: descriptionController,
                     onSaved: (value) {
                       description = value!;
                     },
