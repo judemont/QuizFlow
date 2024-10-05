@@ -149,11 +149,17 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
                   icon: const Icon(Icons.dynamic_feed),
                 ),
               ),
-              const SizedBox(height: 30),
-              const Text(
-                "Subsets:",
-                style: TextStyle(fontSize: 20),
-              ),
+              Visibility(
+                  visible: subsets.isNotEmpty,
+                  child: const Column(
+                    children: [
+                      SizedBox(height: 30),
+                      Text(
+                        "Subsets:",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  )),
               ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
