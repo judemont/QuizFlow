@@ -2,17 +2,22 @@ import 'dart:convert';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:quizflow/models/subset.dart';
 import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/utilities/database.dart';
+import 'package:quizflow/widgets/dismissible_card.dart';
 import 'package:quizflow/widgets/home_page.dart';
+import 'package:quizflow/widgets/subset_editor_card.dart';
 import 'package:quizflow/widgets/word_editor_card.dart';
 
 class VocEditorPage extends StatefulWidget {
+  final List<Subset>? initialSubsets;
   final List<Word>? initialWords;
   final Voc? initialVoc;
-  const VocEditorPage({super.key, this.initialWords, this.initialVoc});
+  const VocEditorPage(
+      {super.key, this.initialWords, this.initialVoc, this.initialSubsets});
 
   @override
   State<VocEditorPage> createState() => _VocEditorPageState();
@@ -22,49 +27,47 @@ class _VocEditorPageState extends State<VocEditorPage> {
   final newVocFormKey = GlobalKey<FormState>();
   String title = "";
   String description = "";
-  List<Widget> wordsCards = [];
-  List<List<TextEditingController>> wordsControllers = [];
+  ValueNotifier<List<DismissibleCard>> wordsCards = ValueNotifier([]);
+  ValueNotifier<List<DismissibleCard>> subsetsCards = ValueNotifier([]);
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
-  void newCard({Word? initialWord}) {
+  void newWordCard({Word? initialWord}) {
     setState(() {
       TextEditingController questionController =
           TextEditingController(text: initialWord?.word ?? "");
       TextEditingController answerController =
           TextEditingController(text: initialWord?.answer ?? "");
 
-      int wordIndex = wordsControllers.length + 1;
-
-      wordsCards.add(Dismissible(
-        direction: DismissDirection.endToStart,
-        onDismissed: (DismissDirection direction) {
-          print('Dismissed with direction $direction');
-          print(answerController.text);
-          wordsControllers.removeAt(wordIndex);
+      wordsCards.value.add(DismissibleCard(
+        editorCards: wordsCards,
+        onItemRemoved: () {
+          setState(() {});
         },
-        // confirmDismiss:
-        //     (DismissDirection direction) async {
-        //   return false;
-        // },
-        background: const ColoredBox(
-          color: Colors.red,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Icon(Icons.delete, color: Colors.white),
-            ),
-          ),
-        ),
-        key: UniqueKey(),
         child: WordEditorCard(
           questionController: questionController,
           answerController: answerController,
         ),
       ));
+    });
+  }
 
-      wordsControllers.add([questionController, answerController]);
+  void newSubsetCard({Subset? initialSubset}) {
+    setState(() {
+      int from = initialSubset?.from ?? -1;
+      int to = initialSubset?.to ?? -1;
+
+      subsetsCards.value.add(DismissibleCard(
+        editorCards: subsetsCards,
+        onItemRemoved: () {
+          setState(() {});
+        },
+        child: SubsetEditorCard(
+          wordEditorCardsNotifier: wordsCards,
+          from: from,
+          to: to,
+        ),
+      ));
     });
   }
 
@@ -87,13 +90,39 @@ class _VocEditorPageState extends State<VocEditorPage> {
       print("updates words");
       await DatabaseService.removeWordsFromVoc(vocId);
     }
-    for (int i = 0; i < wordsControllers.length; i++) {
-      if (wordsControllers[i][0].text.isNotEmpty &&
-          wordsControllers[i][1].text.isNotEmpty) {
+    for (int i = 0; i < wordsCards.value.length; i++) {
+      if (wordsCards.value[i].child is WordEditorCard &&
+          (wordsCards.value[i].child as WordEditorCard)
+              .questionController
+              .text
+              .isNotEmpty &&
+          (wordsCards.value[i].child as WordEditorCard)
+              .answerController
+              .text
+              .isNotEmpty) {
         await DatabaseService.createWord(Word(
             vocId: vocId,
-            word: wordsControllers[i][0].text,
-            answer: wordsControllers[i][1].text));
+            word: (wordsCards.value[i].child as WordEditorCard)
+                .questionController
+                .text,
+            answer: (wordsCards.value[i].child as WordEditorCard)
+                .answerController
+                .text));
+      }
+    }
+    if (widget.initialSubsets != null) {
+      // TO BE FIXED !;
+      print("updates subsets");
+      await DatabaseService.removeSubsetsFromVoc(vocId);
+    }
+    for (int i = 0; i < subsetsCards.value.length; i++) {
+      if (subsetsCards.value[i].child is SubsetEditorCard &&
+          (subsetsCards.value[i].child as SubsetEditorCard).from != -1 &&
+          (subsetsCards.value[i].child as SubsetEditorCard).to != -1) {
+        await DatabaseService.createSubset(Subset(
+            vocId: vocId,
+            from: (subsetsCards.value[i].child as SubsetEditorCard).from,
+            to: (subsetsCards.value[i].child as SubsetEditorCard).to));
       }
     }
     return;
@@ -109,11 +138,22 @@ class _VocEditorPageState extends State<VocEditorPage> {
     if (widget.initialWords != null) {
       print("BBBAA");
       for (Word word in widget.initialWords!) {
-        newCard(initialWord: word);
+        newWordCard(initialWord: word);
       }
     } else {
-      for (var i = 0; i < 4; i++) {
-        newCard();
+      for (var i = 0; i < 3; i++) {
+        newWordCard();
+      }
+    }
+
+    if (widget.initialSubsets != null) {
+      print("BBBAA");
+      for (Subset subset in widget.initialSubsets!) {
+        newSubsetCard(initialSubset: subset);
+      }
+    } else {
+      for (var i = 0; i < 1; i++) {
+        newSubsetCard();
       }
     }
     super.initState();
@@ -133,7 +173,10 @@ class _VocEditorPageState extends State<VocEditorPage> {
       Map<String, dynamic> data = jsonDecode(backupContent);
 
       for (var word in data["words"]) {
-        newCard(initialWord: Word.fromMap(word));
+        newWordCard(initialWord: Word.fromMap(word));
+      }
+      for (var subset in data["subsets"]) {
+        newSubsetCard(initialSubset: Subset.fromMap(subset));
       }
       titleController.text = data["title"];
       descriptionController.text = data["description"];
@@ -215,15 +258,37 @@ class _VocEditorPageState extends State<VocEditorPage> {
                   const SizedBox(height: 40),
                   Column(
                     children: [
+                      const Text(
+                        "Subsets:",
+                        style: TextStyle(fontSize: 20),
+                      ),
                       Column(
-                        children: wordsCards,
+                        children: subsetsCards.value,
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            newCard();
+                            newSubsetCard();
+                          },
+                          child: const Text("New")),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      const Text(
+                        "Words:",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Column(
+                        children: wordsCards.value,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            newWordCard();
                           },
                           child: const Text("New"))
                     ],

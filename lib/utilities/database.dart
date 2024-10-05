@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:quizflow/models/subset.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -11,7 +12,7 @@ class DatabaseService {
   static Database? db;
 
   static const databaseVersion = 1;
-  List<String> tables = ["Vocs", "Words"];
+  List<String> tables = ["Vocs", "Words", "Subsets"];
 
   static Future<Database> initializeDb() async {
     final databasePath = (await getApplicationDocumentsDirectory()).path;
@@ -61,6 +62,15 @@ class DatabaseService {
           vocId INTEGER
       )
     """);
+
+    await database.execute("""
+      CREATE TABLE Subsets(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          "from" INTEGER,
+          "to" INTEGER,
+          vocId INTEGER
+      )
+    """);
   }
 
   static Future<int> createVoc(Voc voc) async {
@@ -79,6 +89,13 @@ class DatabaseService {
     return id;
   }
 
+  static Future<int> createSubset(Subset subset) async {
+    final db = await DatabaseService.initializeDb();
+
+    final id = await db.insert('Subsets', subset.toMap());
+    return id;
+  }
+
   static Future<List<Voc>> getVocs({String searchQuery = ""}) async {
     final db = await DatabaseService.initializeDb();
 
@@ -88,10 +105,18 @@ class DatabaseService {
     return queryResult.map((e) => Voc.fromMap(e)).toList();
   }
 
-  static Future<List<Word>> getWord() async {
+  static Future<List<Word>> getWords() async {
     final db = await DatabaseService.initializeDb();
 
     List<Map<String, dynamic>> queryResult = await db.query('Words');
+
+    return queryResult.map((e) => Word.fromMap(e)).toList();
+  }
+
+  static Future<List<Word>> getSubsets() async {
+    final db = await DatabaseService.initializeDb();
+
+    List<Map<String, dynamic>> queryResult = await db.query('Subsets');
 
     return queryResult.map((e) => Word.fromMap(e)).toList();
   }
@@ -105,6 +130,15 @@ class DatabaseService {
     return vocWords.map((e) => Word.fromMap(e)).toList();
   }
 
+  static Future<List<Subset>> getSubsetsFromVoc(int vocId) async {
+    final db = await DatabaseService.initializeDb();
+
+    List<Map<String, dynamic>> vocSubsets =
+        await db.query('Subsets', where: "vocId = $vocId");
+
+    return vocSubsets.map((e) => Subset.fromMap(e)).toList();
+  }
+
   static Future<void> removeVoc(int vocId) async {
     final db = await DatabaseService.initializeDb();
     db.delete("Vocs", where: "id = $vocId");
@@ -116,9 +150,19 @@ class DatabaseService {
     db.delete("Words", where: "id = $wordId");
   }
 
+  static Future<void> removeSubset(int subsetId) async {
+    final db = await DatabaseService.initializeDb();
+    db.delete("Subsets", where: "id = $subsetId");
+  }
+
   static Future<void> removeWordsFromVoc(int vocId) async {
     final db = await DatabaseService.initializeDb();
     db.delete("Words", where: "vocId = $vocId");
+  }
+
+  static Future<void> removeSubsetsFromVoc(int vocId) async {
+    final db = await DatabaseService.initializeDb();
+    db.delete("Subsets", where: "vocId = $vocId");
   }
 
   static Future<void> updateVoc(Voc voc) async {
@@ -134,11 +178,27 @@ class DatabaseService {
     db.update("Words", word.toMap(), where: 'id = ?', whereArgs: [word.id]);
   }
 
+  static Future<void> updateSubset(Subset subset) async {
+    print("UPDATE");
+
+    final db = await DatabaseService.initializeDb();
+
+    db.update("Subsets", subset.toMap(),
+        where: 'id = ?', whereArgs: [subset.id]);
+  }
+
   static Future<String> exportVoc(Voc voc) async {
     List<Word> words = await getWordsFromVoc(voc.id!);
+    List<Subset> subsets = await getSubsetsFromVoc(voc.id!);
+
     Map result = voc.toMap();
+
     List<Map<dynamic, dynamic>> wordsMap = words.map((e) => e.toMap()).toList();
+    List<Map<dynamic, dynamic>> subsetsMap =
+        subsets.map((e) => e.toMap()).toList();
+
     result["words"] = wordsMap;
+    result["subsets"] = subsetsMap;
     return jsonEncode(result);
   }
 
@@ -146,7 +206,10 @@ class DatabaseService {
     Map<String, dynamic> jsonData = jsonDecode(backup);
     Voc voc = Voc.fromMap(jsonData);
     int vocId = await createVoc(voc);
+
     List wordsMap = jsonData["words"];
+    List subsetsMap = jsonData["subsets"];
+
     for (var i = 0; i < wordsMap.length; i++) {
       Map<String, dynamic> wordMap = wordsMap[i];
       wordMap["vocId"] = vocId;
@@ -154,6 +217,15 @@ class DatabaseService {
 
       Word word = Word.fromMap(wordMap);
       await createWord(word);
+    }
+
+    for (var i = 0; i < subsetsMap.length; i++) {
+      Map<String, dynamic> subsetMap = subsetsMap[i];
+      subsetMap["vocId"] = vocId;
+      print(subsetMap);
+
+      Subset subset = Subset.fromMap(subsetMap);
+      await createSubset(subset);
     }
   }
 
