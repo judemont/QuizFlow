@@ -58,7 +58,10 @@ class FlashcardCard extends StatelessWidget {
     return Card(
       elevation: 20,
       child: SizedBox(
-          height: 400, width: 300, child: Center(child: Text(cardContent))),
+          height: 400,
+          width: 300,
+          child:
+              Center(child: Text(cardContent, style: TextStyle(fontSize: 20)))),
     );
   }
 }

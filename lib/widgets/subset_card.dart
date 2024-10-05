@@ -18,9 +18,14 @@ class SubsetCard extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text(words.first.word ?? ""),
-                const Text("-"),
-                Text(words.last.word ?? "")
+                Text(words.first.word ?? "",
+                    style: const TextStyle(fontSize: 20)),
+                const Text(
+                  "to",
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+                Text(words.last.word ?? "",
+                    style: const TextStyle(fontSize: 20))
               ],
             ),
             const Spacer(),
