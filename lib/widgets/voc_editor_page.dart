@@ -192,6 +192,8 @@ class _VocEditorPageState extends State<VocEditorPage> {
   void handleImportMenuClick(String value) {
     if (value == "Import from file") {
       userImportVoc();
+      showSubsets = true;
+      setState(() {});
     }
   }
 
