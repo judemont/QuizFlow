@@ -35,9 +35,46 @@ class _SubsetEditorCardState extends State<SubsetEditorCard> {
                       Autocomplete<String>(
                         optionsBuilder:
                             (TextEditingValue textEditingValue) async {
-                          if (textEditingValue.text.isEmpty ||
-                              widget.wordEditorCardsNotifier.value.isEmpty) {
+                          if (widget.wordEditorCardsNotifier.value.isEmpty) {
                             return const Iterable<String>.empty();
+                          }
+
+                          if (textEditingValue.text.isEmpty) {
+                            return widget.wordEditorCardsNotifier.value
+                                .map((e) {
+                              if (e.child is WordEditorCard &&
+                                  (e.child as WordEditorCard)
+                                      .questionController
+                                      .text
+                                      .isNotEmpty &&
+                                  (e.child as WordEditorCard)
+                                      .answerController
+                                      .text
+                                      .isNotEmpty) {
+                                return (e.child as WordEditorCard)
+                                    .questionController
+                                    .text;
+                              }
+                            }).where((String? option) {
+                              return option != null &&
+                                  option.isNotEmpty &&
+                                  (widget.to == -1 ||
+                                      widget.wordEditorCardsNotifier.value
+                                              .indexWhere((element) {
+                                            if (element.child
+                                                is WordEditorCard) {
+                                              return (element.child
+                                                          as WordEditorCard)
+                                                      .questionController
+                                                      .text
+                                                      .toLowerCase() ==
+                                                  option.toLowerCase();
+                                            } else {
+                                              return false;
+                                            }
+                                          }) <
+                                          widget.to);
+                            }).cast<String>();
                           }
 
                           return widget.wordEditorCardsNotifier.value.map((e) {
@@ -160,7 +197,39 @@ class _SubsetEditorCardState extends State<SubsetEditorCard> {
                         optionsBuilder:
                             (TextEditingValue textEditingValue) async {
                           if (textEditingValue.text.isEmpty) {
-                            return const Iterable<String>.empty();
+                            return widget.wordEditorCardsNotifier.value
+                                .map((e) {
+                              if (e.child is WordEditorCard &&
+                                  (e.child as WordEditorCard)
+                                      .questionController
+                                      .text
+                                      .isNotEmpty &&
+                                  (e.child as WordEditorCard)
+                                      .answerController
+                                      .text
+                                      .isNotEmpty) {
+                                return (e.child as WordEditorCard)
+                                    .questionController
+                                    .text;
+                              }
+                            }).where((String? option) {
+                              return option != null &&
+                                  option.isNotEmpty &&
+                                  widget.wordEditorCardsNotifier.value
+                                          .indexWhere((element) {
+                                        if (element.child is WordEditorCard) {
+                                          return (element.child
+                                                      as WordEditorCard)
+                                                  .questionController
+                                                  .text
+                                                  .toLowerCase() ==
+                                              option.toLowerCase();
+                                        } else {
+                                          return false;
+                                        }
+                                      }) >
+                                      widget.from;
+                            }).cast<String>();
                           }
 
                           return widget.wordEditorCardsNotifier.value.map((e) {
