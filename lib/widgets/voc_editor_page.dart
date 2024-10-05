@@ -266,14 +266,17 @@ class _VocEditorPageState extends State<VocEditorPage> {
                     children: [
                       Visibility(
                         visible: !showSubsets,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              showSubsets = true;
-                            });
-                          },
-                          child: const Text("Create Subsets"),
-                        ),
+                        child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  showSubsets = true;
+                                });
+                              },
+                              label: const Text("Create Subsets"),
+                              icon: const Icon(Icons.folder_copy),
+                            )),
                       ),
                       Visibility(
                         visible: showSubsets,
