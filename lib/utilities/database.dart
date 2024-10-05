@@ -11,7 +11,7 @@ class DatabaseService {
   static const String databaseName = "quizflowDB.sqlite";
   static Database? db;
 
-  static const databaseVersion = 1;
+  static const databaseVersion = 2;
   List<String> tables = ["Vocs", "Words", "Subsets"];
 
   static Future<Database> initializeDb() async {
@@ -42,7 +42,18 @@ class DatabaseService {
   static updateTables(Database db, int oldVersion, int newVersion) {
     print(" DB Version : $newVersion");
     print(oldVersion);
-    if (oldVersion < newVersion) {}
+    if (oldVersion < newVersion) {
+      if (oldVersion < 2) {
+        db.execute("""
+      CREATE TABLE Subsets(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          "from" INTEGER,
+          "to" INTEGER,
+          vocId INTEGER
+      )
+    """);
+      }
+    }
   }
 
   static Future<void> createTables(Database database) async {
