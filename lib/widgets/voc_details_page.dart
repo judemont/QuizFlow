@@ -62,17 +62,42 @@ class _VocDetailsPageState extends State<VocDetailsPage> {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () {
-              DatabaseService.removeVoc(widget.voc.id!).then((value) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const PagesLayout(
-                      currentSection: 0,
-                      child: HomePage(),
-                    ),
-                  ),
-                  (Route<dynamic> route) => false,
-                );
-              });
+              showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    return AlertDialog(
+                      title: const Text('Please Confirm'),
+                      content: const Text('Are you sure ?'),
+                      actions: [
+                        // The "Yes" button
+                        TextButton(
+                            onPressed: () {
+                              // Remove the box
+                              DatabaseService.removeVoc(widget.voc.id!)
+                                  .then((value) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => const PagesLayout(
+                                      currentSection: 0,
+                                      child: HomePage(),
+                                    ),
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                              });
+                              // Close the dialog
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Yes')),
+                        TextButton(
+                            onPressed: () {
+                              // Close the dialog
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('No'))
+                      ],
+                    );
+                  });
             },
           ),
           IconButton(
