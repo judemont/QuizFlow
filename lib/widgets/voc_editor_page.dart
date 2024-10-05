@@ -31,6 +31,7 @@ class _VocEditorPageState extends State<VocEditorPage> {
   ValueNotifier<List<DismissibleCard>> subsetsCards = ValueNotifier([]);
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  bool showSubsets = false;
 
   void newWordCard({Word? initialWord}) {
     setState(() {
@@ -60,6 +61,9 @@ class _VocEditorPageState extends State<VocEditorPage> {
       subsetsCards.value.add(DismissibleCard(
         editorCards: subsetsCards,
         onItemRemoved: () {
+          if (subsetsCards.value.isEmpty) {
+            showSubsets = false;
+          }
           setState(() {});
         },
         child: SubsetEditorCard(
@@ -147,11 +151,13 @@ class _VocEditorPageState extends State<VocEditorPage> {
     }
 
     if (widget.initialSubsets != null) {
+      showSubsets = true;
       print("BBBAA");
       for (Subset subset in widget.initialSubsets!) {
         newSubsetCard(initialSubset: subset);
       }
     } else {
+      showSubsets = false;
       for (var i = 0; i < 1; i++) {
         newSubsetCard();
       }
@@ -258,21 +264,39 @@ class _VocEditorPageState extends State<VocEditorPage> {
                   const SizedBox(height: 40),
                   Column(
                     children: [
-                      const Text(
-                        "Subsets:",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Column(
-                        children: subsetsCards.value,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
+                      Visibility(
+                        visible: !showSubsets,
+                        child: ElevatedButton(
                           onPressed: () {
-                            newSubsetCard();
+                            setState(() {
+                              showSubsets = true;
+                            });
                           },
-                          child: const Text("New")),
+                          child: const Text("Create Subsets"),
+                        ),
+                      ),
+                      Visibility(
+                        visible: showSubsets,
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Subsets:",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            Column(
+                              children: subsetsCards.value,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  newSubsetCard();
+                                },
+                                child: const Text("New")),
+                          ],
+                        ),
+                      ),
                       const SizedBox(
                         height: 40,
                       ),
