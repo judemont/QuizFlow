@@ -94,11 +94,21 @@ class _WritePageState extends State<WritePage> {
     });
   }
 
+  String? normalizeString(String? str) {
+    List<String> specialChars = ["?", "!", ".", ",", ";", ":"];
+
+    for (var element in specialChars) {
+      str = str?.replaceAll(element, "");
+    }
+
+    return str?.toLowerCase().trim();
+  }
+
   void onSubmit() {
     setState(() {
-      userAnswer = answerController.text;
+      userAnswer = normalizeString(answerController.text)!;
     });
-    if (actualWord.answer == userAnswer) {
+    if (normalizeString(actualWord.answer) == userAnswer) {
       onTrue();
     } else {
       onWrong();
