@@ -149,6 +149,7 @@ class _WritePageState extends State<WritePage> {
                 Text("Your answer: \"$userAnswer\" 🫣😳",
                     style: const TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
               ]),
             ),
             Visibility(
@@ -173,7 +174,10 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                 )),
-                const SizedBox(width: 10),
+                Visibility(
+                    visible: wrongAnswer,
+                    child: IconButton(
+                        onPressed: onTrue, icon: const Icon(Icons.skip_next))),
                 IconButton(
                     onPressed: () => onSubmit(), icon: const Icon(Icons.send))
               ],
