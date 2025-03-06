@@ -22,7 +22,7 @@ dependencies:
   shared_preferences: ^2.2.3
   flutter_archive: ^6.0.3
   flutter_tts: ^4.2.2
-  language_detector: ^1.0.1
+  flutter_langdetect: ^0.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

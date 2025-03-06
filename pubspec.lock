@@ -206,6 +206,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.3"
+  flutter_langdetect:
+    dependency: "direct main"
+    description:
+      name: flutter_langdetect
+      sha256: "93bd865c7d5723eac614744abb32234ee4f593505a293bc17ef097bd55fbdf38"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -272,14 +280,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
-  language_detector:
-    dependency: "direct main"
-    description:
-      name: language_detector
-      sha256: f8a8a4f8fc3046066f81715b82a9255ded4f5d2d2b08daa073601ec61dcc4a7a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -312,6 +312,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: "7ad7215c15420a102ec687bb320a7312afd449bac63bfb1c60d9787c27b9767f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   matcher:
     dependency: transitive
     description:
@@ -605,14 +613,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.3"
-  translator:
-    dependency: transitive
-    description:
-      name: translator
-      sha256: "8f5e56d0ffb8f493b23ad0e4f824c17e5f43d45997e33b7c7b689c7a33cf3b06"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3+1"
   typed_data:
     dependency: transitive
     description:

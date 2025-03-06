@@ -1,11 +1,13 @@
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:language_detector/language_detector.dart';
+import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
 class TTS {
   FlutterTts tts = FlutterTts();
 
   Future<void> speech(String word) async {
-    String language = await LanguageDetector.getLanguageCode(content: word);
+    await langdetect.initLangDetect();
+    String language = langdetect.detect(word);
+    print(language);
     await tts.setLanguage(language);
     tts.speak(word);
   }
