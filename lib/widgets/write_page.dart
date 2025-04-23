@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/utilities/tts.dart';
 import 'package:quizflow/widgets/result_page.dart';
 
 class WritePage extends StatefulWidget {
@@ -94,11 +95,21 @@ class _WritePageState extends State<WritePage> {
     });
   }
 
+  String? normalizeString(String? str) {
+    List<String> specialChars = ["?", "!", ".", ",", ";", ":"];
+
+    for (var element in specialChars) {
+      str = str?.replaceAll(element, "");
+    }
+
+    return str?.toLowerCase().trim();
+  }
+
   void onSubmit() {
     setState(() {
-      userAnswer = answerController.text;
+      userAnswer = normalizeString(answerController.text)!;
     });
-    if (actualWord.answer == userAnswer) {
+    if (normalizeString(actualWord.answer) == userAnswer) {
       onTrue();
     } else {
       onWrong();
@@ -110,12 +121,20 @@ class _WritePageState extends State<WritePage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Write")),
       body: Container(
-        margin: const EdgeInsets.all(10),
+        margin: const EdgeInsets.only(left: 10, right: 10, top: 50, bottom: 20),
         child: Column(
           children: [
-            Text(
-              actualWord.word ?? "",
-              style: const TextStyle(fontSize: 30),
+            Wrap(
+              children: [
+                Text(
+                  actualWord.word ?? "",
+                  style: const TextStyle(fontSize: 30),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.volume_up),
+                  onPressed: () => TTS().speech(actualWord.word ?? ""),
+                ),
+              ],
             ),
             const Spacer(),
             Visibility(
@@ -130,6 +149,7 @@ class _WritePageState extends State<WritePage> {
                 Text("Your answer: \"$userAnswer\" 🫣😳",
                     style: const TextStyle(
                         color: Colors.red, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
               ]),
             ),
             Visibility(
@@ -154,7 +174,10 @@ class _WritePageState extends State<WritePage> {
                     ),
                   ),
                 )),
-                const SizedBox(width: 10),
+                Visibility(
+                    visible: wrongAnswer,
+                    child: IconButton(
+                        onPressed: onTrue, icon: const Icon(Icons.skip_next))),
                 IconButton(
                     onPressed: () => onSubmit(), icon: const Icon(Icons.send))
               ],

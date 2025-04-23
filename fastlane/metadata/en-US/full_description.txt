@@ -6,6 +6,7 @@ Master vocabulary effortlessly with QuizFlow:
 - 📝 Create and organize custom word lists with ease.
 - 📊 Track your progress with detailed stats and reports.
 - 🎮 Interactive flashcards and quizzes for effective learning.
+- 🔊 Listen to words with TTS (Text-to-Speech) to enhance pronunciation and understanding.
 - 🎨 Beautiful and stylish Material You design.
 - 🌐 Fully offline - no internet required!
 - 🔄 Import and export vocabulary lists effortlessly to share and back up your learning.

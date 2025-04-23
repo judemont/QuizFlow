@@ -1,6 +1,7 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/word.dart';
+import 'package:quizflow/utilities/tts.dart';
 
 class FlashCard extends StatefulWidget {
   final Word word;
@@ -22,6 +23,12 @@ class FlashCard extends StatefulWidget {
 class FlashCardState extends State<FlashCard> {
   bool flashCardFace = false;
   Color bgColor = Colors.transparent;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dismissible(
@@ -42,26 +49,50 @@ class FlashCardState extends State<FlashCard> {
                 direction: FlipDirection.HORIZONTAL,
                 front: FlashcardCard(
                   cardContent: widget.word.word ?? "",
+                  onTapSpeech: () => TTS().speech(widget.word.word ?? ""),
                 ),
                 back: FlashcardCard(
                   cardContent: widget.word.answer ?? "",
+                  onTapSpeech: () => TTS().speech(widget.word.answer ?? ""),
                 ))));
   }
 }
 
 class FlashcardCard extends StatelessWidget {
   final String cardContent;
-  const FlashcardCard({super.key, required this.cardContent});
+  final void Function() onTapSpeech;
+  const FlashcardCard(
+      {super.key, required this.cardContent, required this.onTapSpeech});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 20,
-      child: SizedBox(
-          height: 400,
-          width: 300,
-          child: Center(
-              child: Text(cardContent, style: const TextStyle(fontSize: 20)))),
+      child: Stack(
+        children: [
+          SizedBox(
+            height: 400,
+            width: 300,
+            child: Center(
+              child: Text(
+                cardContent,
+                style: const TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: IconButton(
+              icon: const Icon(Icons.volume_up),
+              onPressed: onTapSpeech,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
