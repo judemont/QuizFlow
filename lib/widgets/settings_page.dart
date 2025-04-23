@@ -13,11 +13,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String theme = "";
+  bool autoSpeech = false;
 
   @override
   void initState() {
     SharedPreferences.getInstance().then((prefs) {
       theme = prefs.getString('theme') ?? "system";
+      autoSpeech = prefs.getBool('autoSpeech') ?? false;
     });
 
     super.initState();
@@ -92,6 +94,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
             },
           ),
+          SwitchListTile(
+              title: const Text("Automatic Text-to-Speech"),
+              value: autoSpeech,
+              onChanged: (value) {
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setBool("autoSpeech", false);
+                  setState(() {
+                    autoSpeech = value;
+                  });
+                });
+              }),
+          const SizedBox(height: 20),
+          const Text(
+            "Actions",
+            style: TextStyle(fontSize: 20),
+          ),
           ListTile(
             title: const Text("Export"),
             subtitle: const Text("Export all your lists"),
@@ -114,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
               });
             },
           ),
-          const SizedBox(),
+          const SizedBox(height: 20),
           const Text(
             "About",
             style: TextStyle(fontSize: 20),
