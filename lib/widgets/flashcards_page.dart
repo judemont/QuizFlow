@@ -59,9 +59,9 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         onFlip: (isFront) {
           if (autoSpeech) {
             if (isFront) {
-              TTS().speech(word.answer ?? "");
-            } else {
               TTS().speech(word.word ?? "");
+            } else {
+              TTS().speech(word.answer ?? "");
             }
             print("speech left");
           }
