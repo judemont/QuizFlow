@@ -56,9 +56,13 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
     setState(() {
       wordsCards.add(Center(
           child: FlashCard(
-        onFlip: () {
+        onFlip: (isFront) {
           if (autoSpeech) {
-            TTS().speech(word.word ?? "");
+            if (isFront) {
+              TTS().speech(word.answer ?? "");
+            } else {
+              TTS().speech(word.word ?? "");
+            }
             print("speech left");
           }
         },
@@ -73,7 +77,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
             endOfGame();
           } else {
             if (autoSpeech) {
-              TTS().speech(word.word ?? "");
+              TTS().speech(widget.words[cardIndex].word ?? "");
               print("speech left");
             }
           }
@@ -85,7 +89,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
             endOfGame();
           } else {
             if (autoSpeech) {
-              TTS().speech(word.word ?? "");
+              TTS().speech(widget.words[cardIndex].word ?? "");
             }
           }
         },
@@ -107,11 +111,14 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
 
   @override
   void initState() {
-    for (var word in widget.words..shuffle()) {
+    widget.words.shuffle();
+    for (var word in widget.words) {
       newCard(word);
     }
     loadPrefs().then((_) {
-      TTS().speech(widget.words[0].word ?? "");
+      if (autoSpeech) {
+        TTS().speech(widget.words[0].word ?? "");
+      }
     });
     super.initState();
   }

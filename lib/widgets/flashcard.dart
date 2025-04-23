@@ -8,7 +8,7 @@ class FlashCard extends StatefulWidget {
   final void Function(Word) onSwipeLeft;
   final void Function(Word) onSwipeRight;
   final void Function(DismissUpdateDetails)? onDismissibleUpdate;
-  final void Function()? onFlip;
+  final void Function(bool)? onFlip;
 
   const FlashCard(
       {super.key,
@@ -48,7 +48,7 @@ class FlashCardState extends State<FlashCard> {
               });
             },
             child: FlipCard(
-                onFlip: widget.onFlip,
+                onFlipDone: (isFront) => widget.onFlip,
                 direction: FlipDirection.HORIZONTAL,
                 front: FlashcardCard(
                   cardContent: widget.word.word ?? "",
