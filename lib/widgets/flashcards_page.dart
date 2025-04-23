@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/utilities/tts.dart';
 import 'package:quizflow/widgets/flashcard.dart';
 import 'package:quizflow/widgets/result_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FlashcardsPage extends StatefulWidget {
   final List<Word> words;
@@ -17,6 +19,14 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
   String? topMessage = '';
   List<Word> incorrectWords = [];
   int cardIndex = 0;
+  bool autoSpeech = false;
+
+  Future<void> loadPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      autoSpeech = prefs.getBool('autoSpeech') ?? false;
+    });
+  }
 
   void endOfGame() {
     List<Word> completedWords = [];
@@ -46,6 +56,12 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
     setState(() {
       wordsCards.add(Center(
           child: FlashCard(
+        onFlip: () {
+          if (autoSpeech) {
+            TTS().speech(word.word ?? "");
+            print("speech left");
+          }
+        },
         onSwipeLeft: (word) {
           cardIndex++;
           print("swipeLeft");
@@ -55,6 +71,11 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
 
           if (cardIndex >= widget.words.length) {
             endOfGame();
+          } else {
+            if (autoSpeech) {
+              TTS().speech(word.word ?? "");
+              print("speech left");
+            }
           }
         },
         onSwipeRight: (word) {
@@ -62,6 +83,10 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
           print("right");
           if (cardIndex >= widget.words.length) {
             endOfGame();
+          } else {
+            if (autoSpeech) {
+              TTS().speech(word.word ?? "");
+            }
           }
         },
         word: word,
@@ -85,6 +110,9 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
     for (var word in widget.words..shuffle()) {
       newCard(word);
     }
+    loadPrefs().then((_) {
+      TTS().speech(widget.words[0].word ?? "");
+    });
     super.initState();
   }
 

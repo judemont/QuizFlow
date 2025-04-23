@@ -17,12 +17,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void initState() {
-    SharedPreferences.getInstance().then((prefs) {
+    loadPrefs();
+    super.initState();
+  }
+
+  void loadPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
       theme = prefs.getString('theme') ?? "system";
       autoSpeech = prefs.getBool('autoSpeech') ?? false;
     });
-
-    super.initState();
   }
 
   @override
@@ -99,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
               value: autoSpeech,
               onChanged: (value) {
                 SharedPreferences.getInstance().then((prefs) {
-                  prefs.setBool("autoSpeech", false);
+                  prefs.setBool("autoSpeech", value);
                   setState(() {
                     autoSpeech = value;
                   });
