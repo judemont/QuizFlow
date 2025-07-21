@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:quizflow/models/answer.dart';
 import 'package:quizflow/models/subset.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -11,8 +12,8 @@ class DatabaseService {
   static const String databaseName = "quizflowDB.sqlite";
   static Database? db;
 
-  static const databaseVersion = 2;
-  List<String> tables = ["Vocs", "Words", "Subsets"];
+  static const databaseVersion = 3;
+  List<String> tables = ["Vocs", "Words", "Answers", "Subsets"];
 
   static Future<Database> initializeDb() async {
     final databasePath = (await getApplicationDocumentsDirectory()).path;
@@ -39,19 +40,60 @@ class DatabaseService {
     });
   }
 
-  static updateTables(Database db, int oldVersion, int newVersion) {
+  static updateTables(Database db, int oldVersion, int newVersion) async {
     print(" DB Version : $newVersion");
     print(oldVersion);
     if (oldVersion < newVersion) {
       if (oldVersion < 2) {
-        db.execute("""
-      CREATE TABLE Subsets(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          "from" INTEGER,
-          "to" INTEGER,
-          vocId INTEGER
-      )
-    """);
+        await db.execute("""
+          CREATE TABLE Subsets(
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             "from" INTEGER,
+             "to" INTEGER,
+             vocId INTEGER
+          )
+        """);
+      }
+
+      if (oldVersion < 3) {
+        await db.transaction((txn) async {
+          // 1. Rename old Words table
+          await txn.execute('ALTER TABLE Words RENAME TO Words_old');
+
+          // 2. Create new Words table without `definition`
+          await txn.execute("""
+            CREATE TABLE Words(
+      	       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      	       word TEXT,
+      	       vocId INTEGER
+            )
+          """);
+
+          // 3. Create new Answers table
+          await txn.execute("""
+    	    CREATE TABLE Answers(
+      	       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      	       answer TEXT,
+      	       wordId INTEGER,
+      	       vocId INTEGER
+    	    )
+  	  """);
+
+          // 4. Copy data from Words_old to Words (excluding definition)
+          await txn.execute("""
+    	    INSERT INTO Words (id, word, vocId)
+    	    SELECT id, word, vocId FROM Words_old
+  	  """);
+
+          // 5. Copy definitions into Answers
+          await txn.execute("""
+            INSERT INTO Answers (answer, wordId, vocId)
+    	    SELECT definition, id, vocId FROM Words_old
+  	  """);
+
+          // 6. Drop the old Words table
+          await txn.execute('DROP TABLE Words_old');
+        });
       }
     }
   }
@@ -69,7 +111,15 @@ class DatabaseService {
       CREATE TABLE Words(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           word TEXT,
-          definition TEXT,
+          vocId INTEGER
+      )
+    """);
+
+    await database.execute("""
+      CREATE TABLE Answers(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          answer TEXT,
+	  wordId INTEGER,
           vocId INTEGER
       )
     """);
@@ -100,6 +150,13 @@ class DatabaseService {
     return id;
   }
 
+  static Future<int> createAnswer(Answer answer) async {
+    final db = await DatabaseService.initializeDb();
+
+    final id = await db.insert('Answers', answer.toMap());
+    return id;
+  }
+
   static Future<int> createSubset(Subset subset) async {
     final db = await DatabaseService.initializeDb();
 
@@ -110,8 +167,10 @@ class DatabaseService {
   static Future<List<Voc>> getVocs({String searchQuery = ""}) async {
     final db = await DatabaseService.initializeDb();
 
-    List<Map<String, dynamic>> queryResult =
-        await db.query('Vocs', where: "title LIKE '%$searchQuery%'");
+    List<Map<String, dynamic>> queryResult = await db.query(
+      'Vocs',
+      where: "title LIKE '%$searchQuery%'",
+    );
 
     return queryResult.map((e) => Voc.fromMap(e)).toList();
   }
@@ -135,17 +194,32 @@ class DatabaseService {
   static Future<List<Word>> getWordsFromVoc(int vocId) async {
     final db = await DatabaseService.initializeDb();
 
-    List<Map<String, dynamic>> vocWords =
-        await db.query('Words', where: "vocId = $vocId");
+    List<Map<String, dynamic>> vocWords = await db.query(
+      'Words',
+      where: "vocId = $vocId",
+    );
 
     return vocWords.map((e) => Word.fromMap(e)).toList();
+  }
+
+  static Future<List<Answer>> getAnswersFromWord(int wordId) async {
+    final db = await DatabaseService.initializeDb();
+
+    List<Map<String, dynamic>> wordAnswers = await db.query(
+      'Answers',
+      where: "wordId = $wordId",
+    );
+
+    return wordAnswers.map((e) => Answer.fromMap(e)).toList();
   }
 
   static Future<List<Subset>> getSubsetsFromVoc(int vocId) async {
     final db = await DatabaseService.initializeDb();
 
-    List<Map<String, dynamic>> vocSubsets =
-        await db.query('Subsets', where: "vocId = $vocId");
+    List<Map<String, dynamic>> vocSubsets = await db.query(
+      'Subsets',
+      where: "vocId = $vocId",
+    );
 
     return vocSubsets.map((e) => Subset.fromMap(e)).toList();
   }
@@ -171,6 +245,11 @@ class DatabaseService {
     db.delete("Words", where: "vocId = $vocId");
   }
 
+  static Future<void> removeAnswersFromVoc(int vocId) async {
+    final db = await DatabaseService.initializeDb();
+    db.delete("Answers", where: "vocId = $vocId");
+  }
+
   static Future<void> removeSubsetsFromVoc(int vocId) async {
     final db = await DatabaseService.initializeDb();
     db.delete("Subsets", where: "vocId = $vocId");
@@ -194,8 +273,12 @@ class DatabaseService {
 
     final db = await DatabaseService.initializeDb();
 
-    db.update("Subsets", subset.toMap(),
-        where: 'id = ?', whereArgs: [subset.id]);
+    db.update(
+      "Subsets",
+      subset.toMap(),
+      where: 'id = ?',
+      whereArgs: [subset.id],
+    );
   }
 
   static Future<String> exportVoc(Voc voc) async {
@@ -204,9 +287,18 @@ class DatabaseService {
 
     Map result = voc.toMap();
 
-    List<Map<dynamic, dynamic>> wordsMap = words.map((e) => e.toMap()).toList();
-    List<Map<dynamic, dynamic>> subsetsMap =
-        subsets.map((e) => e.toMap()).toList();
+    List<Map<dynamic, dynamic>> wordsMap = [];
+
+    for (Word word in words) {
+      List<Answer> answers = await getAnswersFromWord(word.id!);
+      Map<String, dynamic> wordMap = word.toMap();
+      wordMap["answers"] = answers.map((e) => e.toMap()).toList();
+      wordsMap.add(wordMap);
+    }
+
+    List<Map<dynamic, dynamic>> subsetsMap = subsets
+        .map((e) => e.toMap())
+        .toList();
 
     result["words"] = wordsMap;
     result["subsets"] = subsetsMap;
@@ -226,8 +318,28 @@ class DatabaseService {
       wordMap["vocId"] = vocId;
       print(wordMap);
 
+      List<Map<String, dynamic>>? answersMap = wordMap.remove("answers");
+      String? answer = wordMap.remove("definition");
+
       Word word = Word.fromMap(wordMap);
-      await createWord(word);
+      int wordId = await createWord(word);
+
+      // TODO: Handle no answers at all on import
+      if (answer != null) {
+        await createAnswer(
+          Answer(answer: answer, wordId: wordId, vocId: vocId),
+        );
+      }
+
+      if (answersMap != null) {
+        for (var j = 0; j < answersMap.length; j++) {
+          Map<String, dynamic> answerMap = answersMap[j];
+          answerMap["wordId"] = wordId;
+          answerMap["vocId"] = vocId;
+          print(answerMap);
+          await createAnswer(Answer.fromMap(answerMap));
+        }
+      }
     }
 
     for (var i = 0; i < subsetsMap.length; i++) {

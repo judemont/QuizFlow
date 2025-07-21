@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:quizflow/widgets/InputChip/flutter_input_chips.dart';
+import 'package:quizflow/widgets/InputChip/input_chips_controller.dart';
 
 class WordEditorCard extends StatefulWidget {
   final TextEditingController questionController;
-  final TextEditingController answerController;
+  final InputChipsController answerController;
 
-  const WordEditorCard(
-      {super.key,
-      required this.questionController,
-      required this.answerController});
+  const WordEditorCard({
+    super.key,
+    required this.questionController,
+    required this.answerController,
+  });
 
   @override
   State<WordEditorCard> createState() => _WordEditorCardState();
@@ -28,13 +31,15 @@ class _WordEditorCardState extends State<WordEditorCard> {
                 labelText: 'Question',
               ),
             ),
-            TextField(
+            FlutterInputChips(
               controller: widget.answerController,
-              decoration: const InputDecoration(
+              onChanged: (v) {},
+              padding: const EdgeInsets.all(0),
+              inputDecoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'Answer',
               ),
-            )
+            ),
           ],
         ),
       ),

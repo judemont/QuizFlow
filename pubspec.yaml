@@ -23,6 +23,7 @@ dependencies:
   flutter_archive: ^6.0.3
   flutter_tts: ^4.2.2
   flutter_langdetect: ^0.0.2
+  rapidfuzz: ^0.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
