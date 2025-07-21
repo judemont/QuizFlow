@@ -7,17 +7,24 @@ import 'package:quizflow/models/voc.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
 import 'package:quizflow/utilities/database.dart';
+import 'package:quizflow/widgets/InputChip/input_chips_controller.dart';
 import 'package:quizflow/widgets/dismissible_card.dart';
 import 'package:quizflow/widgets/home_page.dart';
 import 'package:quizflow/widgets/subset_editor_card.dart';
 import 'package:quizflow/widgets/word_editor_card.dart';
 
+import '../models/answer.dart';
+
 class VocEditorPage extends StatefulWidget {
   final List<Subset>? initialSubsets;
   final List<Word>? initialWords;
   final Voc? initialVoc;
-  const VocEditorPage(
-      {super.key, this.initialWords, this.initialVoc, this.initialSubsets});
+  const VocEditorPage({
+    super.key,
+    this.initialWords,
+    this.initialVoc,
+    this.initialSubsets,
+  });
 
   @override
   State<VocEditorPage> createState() => _VocEditorPageState();
@@ -33,23 +40,30 @@ class _VocEditorPageState extends State<VocEditorPage> {
   TextEditingController descriptionController = TextEditingController();
   bool showSubsets = false;
 
-  void newWordCard({Word? initialWord}) {
+  void newWordCard({Word? initialWord}) async {
+    List<Answer>? initialAnswers = initialWord != null
+        ? (await DatabaseService.getAnswersFromWord(initialWord.id!))
+        : null;
     setState(() {
-      TextEditingController questionController =
-          TextEditingController(text: initialWord?.word ?? "");
-      TextEditingController answerController =
-          TextEditingController(text: initialWord?.answer ?? "");
+      TextEditingController questionController = TextEditingController(
+        text: initialWord?.word ?? "",
+      );
+      InputChipsController answerController = InputChipsController(
+        initialAnswers ?? [],
+      );
 
-      wordsCards.value.add(DismissibleCard(
-        editorCards: wordsCards,
-        onItemRemoved: () {
-          setState(() {});
-        },
-        child: WordEditorCard(
-          questionController: questionController,
-          answerController: answerController,
+      wordsCards.value.add(
+        DismissibleCard(
+          editorCards: wordsCards,
+          onItemRemoved: () {
+            setState(() {});
+          },
+          child: WordEditorCard(
+            questionController: questionController,
+            answerController: answerController,
+          ),
         ),
-      ));
+      );
     });
   }
 
@@ -58,20 +72,22 @@ class _VocEditorPageState extends State<VocEditorPage> {
       int from = initialSubset?.from ?? -1;
       int to = initialSubset?.to ?? -1;
 
-      subsetsCards.value.add(DismissibleCard(
-        editorCards: subsetsCards,
-        onItemRemoved: () {
-          if (subsetsCards.value.isEmpty) {
-            showSubsets = false;
-          }
-          setState(() {});
-        },
-        child: SubsetEditorCard(
-          wordEditorCardsNotifier: wordsCards,
-          from: from,
-          to: to,
+      subsetsCards.value.add(
+        DismissibleCard(
+          editorCards: subsetsCards,
+          onItemRemoved: () {
+            if (subsetsCards.value.isEmpty) {
+              showSubsets = false;
+            }
+            setState(() {});
+          },
+          child: SubsetEditorCard(
+            wordEditorCardsNotifier: wordsCards,
+            from: from,
+            to: to,
+          ),
         ),
-      ));
+      );
     });
   }
 
@@ -81,37 +97,40 @@ class _VocEditorPageState extends State<VocEditorPage> {
     int vocId;
     if (widget.initialVoc == null) {
       vocId = await DatabaseService.createVoc(
-          Voc(title: title, description: description));
+        Voc(title: title, description: description),
+      );
     } else {
       print("update voc");
       vocId = widget.initialVoc!.id!;
       DatabaseService.updateVoc(
-          Voc(title: title, description: description, id: vocId));
+        Voc(title: title, description: description, id: vocId),
+      );
     }
 
     if (widget.initialWords != null) {
       // TO BE FIXED !;
       print("updates words");
       await DatabaseService.removeWordsFromVoc(vocId);
+      await DatabaseService.removeAnswersFromVoc(vocId);
     }
     for (int i = 0; i < wordsCards.value.length; i++) {
-      if (wordsCards.value[i].child is WordEditorCard &&
-          (wordsCards.value[i].child as WordEditorCard)
-              .questionController
-              .text
-              .isNotEmpty &&
-          (wordsCards.value[i].child as WordEditorCard)
-              .answerController
-              .text
-              .isNotEmpty) {
-        await DatabaseService.createWord(Word(
-            vocId: vocId,
-            word: (wordsCards.value[i].child as WordEditorCard)
-                .questionController
-                .text,
-            answer: (wordsCards.value[i].child as WordEditorCard)
-                .answerController
-                .text));
+      WordEditorCard wordsCard = (wordsCards.value[i].child as WordEditorCard);
+
+      if (wordsCard.answerController.text.isNotEmpty) {
+        wordsCard.answerController.addChip(wordsCard.answerController.text);
+      }
+
+      if (wordsCard.questionController.text.isNotEmpty &&
+          wordsCard.answerController.chips.isNotEmpty) {
+        int wordId = await DatabaseService.createWord(
+          Word(vocId: vocId, word: wordsCard.questionController.text),
+        );
+
+        for (String? answer in wordsCard.answerController.chips) {
+          await DatabaseService.createAnswer(
+            Answer(answer: answer, wordId: wordId, vocId: vocId),
+          );
+        }
       }
     }
     if (widget.initialSubsets != null) {
@@ -120,13 +139,13 @@ class _VocEditorPageState extends State<VocEditorPage> {
       await DatabaseService.removeSubsetsFromVoc(vocId);
     }
     for (int i = 0; i < subsetsCards.value.length; i++) {
-      if (subsetsCards.value[i].child is SubsetEditorCard &&
-          (subsetsCards.value[i].child as SubsetEditorCard).from != -1 &&
-          (subsetsCards.value[i].child as SubsetEditorCard).to != -1) {
-        await DatabaseService.createSubset(Subset(
-            vocId: vocId,
-            from: (subsetsCards.value[i].child as SubsetEditorCard).from,
-            to: (subsetsCards.value[i].child as SubsetEditorCard).to));
+      SubsetEditorCard subsetsCard =
+          (subsetsCards.value[i].child as SubsetEditorCard);
+
+      if (subsetsCard.from != -1 && subsetsCard.to != -1) {
+        await DatabaseService.createSubset(
+          Subset(vocId: vocId, from: subsetsCard.from, to: subsetsCard.to),
+        );
       }
     }
     return;
@@ -170,8 +189,9 @@ class _VocEditorPageState extends State<VocEditorPage> {
       label: 'QuizFlow list export',
       extensions: <String>['json'],
     );
-    final XFile? file =
-        await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+    final XFile? file = await openFile(
+      acceptedTypeGroups: <XTypeGroup>[typeGroup],
+    );
 
     if (file != null) {
       var fileBytes = await file.readAsBytes();
@@ -204,127 +224,121 @@ class _VocEditorPageState extends State<VocEditorPage> {
         title: Text(widget.initialVoc == null ? "New List" : "Edit List"),
         actions: [
           PopupMenuButton(
-              icon: const Icon(Icons.download),
-              onSelected: handleImportMenuClick,
-              itemBuilder: (BuildContext context) {
-                return {'Import from file'}.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              }),
+            icon: const Icon(Icons.download),
+            onSelected: handleImportMenuClick,
+            itemBuilder: (BuildContext context) {
+              return {'Import from file'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
           IconButton(
-              icon: const Icon(Icons.save),
-              onPressed: () {
-                if (newVocFormKey.currentState!.validate()) {
-                  newVocFormKey.currentState!.save();
+            icon: const Icon(Icons.save),
+            onPressed: () {
+              if (newVocFormKey.currentState!.validate()) {
+                newVocFormKey.currentState!.save();
 
-                  save().then((v) => Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                            builder: (context) => const PagesLayout(
-                                  currentSection: 0,
-                                  child: HomePage(),
-                                )),
-                        (Route<dynamic> route) => false,
-                      ));
-                }
-              }),
+                save().then(
+                  (v) => Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => const PagesLayout(
+                        currentSection: 0,
+                        child: HomePage(),
+                      ),
+                    ),
+                    (Route<dynamic> route) => false,
+                  ),
+                );
+              }
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
         child: Form(
-            key: newVocFormKey,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 56),
-              child: Column(
-                children: [
-                  TextFormField(
-                    // initialValue: widget.initialVoc?.title ?? "",
-                    controller: titleController,
-                    onSaved: (value) {
-                      title = value!;
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Title',
-                    ),
+          key: newVocFormKey,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 56),
+            child: Column(
+              children: [
+                TextFormField(
+                  // initialValue: widget.initialVoc?.title ?? "",
+                  controller: titleController,
+                  onSaved: (value) {
+                    title = value!;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Title',
                   ),
-                  const SizedBox(
-                    height: 20,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: descriptionController,
+                  onSaved: (value) {
+                    description = value!;
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Description',
                   ),
-                  TextFormField(
-                    controller: descriptionController,
-                    onSaved: (value) {
-                      description = value!;
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Description',
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Column(
-                    children: [
-                      Visibility(
-                        visible: !showSubsets,
-                        child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  showSubsets = true;
-                                });
-                              },
-                              label: const Text("Create Subsets"),
-                              icon: const Icon(Icons.folder_copy),
-                            )),
-                      ),
-                      Visibility(
-                        visible: showSubsets,
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Subsets:",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            Column(
-                              children: subsetsCards.value,
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  newSubsetCard();
-                                },
-                                child: const Text("New")),
-                          ],
+                ),
+                const SizedBox(height: 40),
+                Column(
+                  children: [
+                    Visibility(
+                      visible: !showSubsets,
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              showSubsets = true;
+                            });
+                          },
+                          label: const Text("Create Subsets"),
+                          icon: const Icon(Icons.folder_copy),
                         ),
                       ),
-                      const SizedBox(
-                        height: 40,
+                    ),
+                    Visibility(
+                      visible: showSubsets,
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Subsets:",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Column(children: subsetsCards.value),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              newSubsetCard();
+                            },
+                            child: const Text("New"),
+                          ),
+                        ],
                       ),
-                      const Text(
-                        "Words:",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Column(
-                        children: wordsCards.value,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            newWordCard();
-                          },
-                          child: const Text("New"))
-                    ],
-                  )
-                ],
-              ),
-            )),
+                    ),
+                    const SizedBox(height: 40),
+                    const Text("Words:", style: TextStyle(fontSize: 20)),
+                    Column(children: wordsCards.value),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        newWordCard();
+                      },
+                      child: const Text("New"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

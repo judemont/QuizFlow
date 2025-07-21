@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quizflow/models/answer.dart';
 import 'package:quizflow/models/word.dart';
 import 'package:quizflow/pages_layout.dart';
+import 'package:quizflow/utilities/database.dart';
 import 'package:quizflow/utilities/tts.dart';
 import 'package:quizflow/widgets/flashcard.dart';
 import 'package:quizflow/widgets/result_page.dart';
@@ -42,70 +44,74 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
           correctWords: completedWords,
           incorrectWords: incorrectWords,
           tryAgainWithIncorrectPage: MaterialPageRoute(
-              builder: (context) => PagesLayout(
-                  displayNavBar: false,
-                  child: FlashcardsPage(
-                    words: incorrectWords,
-                  ))),
+            builder: (context) => PagesLayout(
+              displayNavBar: false,
+              child: FlashcardsPage(words: incorrectWords),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void newCard(Word word) {
+  void newCard(Word word) async {
+    List<Answer> answers = await DatabaseService.getAnswersFromWord(word.id!);
     setState(() {
-      wordsCards.add(Center(
+      wordsCards.add(
+        Center(
           child: FlashCard(
-        onFlip: (isFront) {
-          if (autoSpeech) {
-            if (isFront) {
-              TTS().speech(word.word ?? "");
-            } else {
-              TTS().speech(word.answer ?? "");
-            }
-            print("speech left");
-          }
-        },
-        onSwipeLeft: (word) {
-          cardIndex++;
-          print("swipeLeft");
-          if (!incorrectWords.contains(word)) {
-            incorrectWords.add(word);
-          }
+            onFlip: (isFront) {
+              if (autoSpeech) {
+                if (isFront) {
+                  TTS().speech(word.word ?? "");
+                } else {
+                  TTS().speech(answers.first.answer ?? "");
+                }
+                print("speech left");
+              }
+            },
+            onSwipeLeft: (word) {
+              cardIndex++;
+              print("swipeLeft");
+              if (!incorrectWords.contains(word)) {
+                incorrectWords.add(word);
+              }
 
-          if (cardIndex >= widget.words.length) {
-            endOfGame();
-          } else {
-            if (autoSpeech) {
-              TTS().speech(widget.words[cardIndex].word ?? "");
-              print("speech left");
-            }
-          }
-        },
-        onSwipeRight: (word) {
-          cardIndex++;
-          print("right");
-          if (cardIndex >= widget.words.length) {
-            endOfGame();
-          } else {
-            if (autoSpeech) {
-              TTS().speech(widget.words[cardIndex].word ?? "");
-            }
-          }
-        },
-        word: word,
-        onDismissibleUpdate: (detail) {
-          setState(() {
-            if (detail.direction == DismissDirection.startToEnd) {
-              topMessage = "I know it ! 😊👏";
-            } else if (detail.direction == DismissDirection.endToStart) {
-              topMessage = "I still need to train it 🫣😳";
-            } else {
-              topMessage = null;
-            }
-          });
-        },
-      )));
+              if (cardIndex >= widget.words.length) {
+                endOfGame();
+              } else {
+                if (autoSpeech) {
+                  TTS().speech(widget.words[cardIndex].word ?? "");
+                  print("speech left");
+                }
+              }
+            },
+            onSwipeRight: (word) {
+              cardIndex++;
+              print("right");
+              if (cardIndex >= widget.words.length) {
+                endOfGame();
+              } else {
+                if (autoSpeech) {
+                  TTS().speech(widget.words[cardIndex].word ?? "");
+                }
+              }
+            },
+            word: word,
+            onDismissibleUpdate: (detail) {
+              setState(() {
+                if (detail.direction == DismissDirection.startToEnd) {
+                  topMessage = "I know it ! 😊👏";
+                } else if (detail.direction == DismissDirection.endToStart) {
+                  topMessage = "I still need to train it 🫣😳";
+                } else {
+                  topMessage = null;
+                }
+              });
+            },
+          ),
+        ),
+      );
     });
   }
 
@@ -127,11 +133,10 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('FlashCards')),
-      body: Column(children: [
-        const SizedBox(
-          height: 20,
-        ),
-        SizedBox(
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          SizedBox(
             height: 60,
             child: Visibility(
               visible: topMessage != null,
@@ -139,11 +144,11 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
                 topMessage ?? "",
                 style: const TextStyle(fontSize: 20),
               ),
-            )),
-        Stack(
-          children: wordsCards,
-        ),
-      ]),
+            ),
+          ),
+          Stack(children: wordsCards),
+        ],
+      ),
     );
   }
 }
