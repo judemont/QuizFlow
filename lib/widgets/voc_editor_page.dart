@@ -198,6 +198,18 @@ class _VocEditorPageState extends State<VocEditorPage> {
       String backupContent = utf8.decode(fileBytes);
       Map<String, dynamic> data = jsonDecode(backupContent);
 
+      wordsCards.value.removeWhere((card) {
+        WordEditorCard wordCard = card.child as WordEditorCard;
+        return wordCard.questionController.text.isEmpty &&
+            wordCard.answerController.chips.isEmpty &&
+            wordCard.answerController.text.isEmpty;
+      });
+
+      subsetsCards.value.removeWhere((card) {
+        SubsetEditorCard subsetCard = card.child as SubsetEditorCard;
+        return subsetCard.from == -1 && subsetCard.to == -1;
+      });
+
       for (var word in data["words"]) {
         newWordCard(initialWord: Word.fromMap(word));
       }
